@@ -29,7 +29,7 @@ public class PersonStepdefs {
 
     @After // Cuidado con esta anotación, está en el paquete cucumber, no junit
     public void tearDown() {
-//        webDriver.quit();
+        webDriver.quit();
     }
 
     @Given("^I am on the main page$")
