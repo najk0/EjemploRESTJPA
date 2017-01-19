@@ -17,10 +17,11 @@ import static org.junit.Assert.*;
 
 public class PersonStepdefs {
     private WebDriver webDriver;
+    private static final String pathToChromeDriver = "/home/oscar/Oscar/Docencia/Curso2016-2017/Taller/chromedriver";
 
     @Before // Cuidado con esta anotación, está en el paquete cucumber, no junit
     public void setUp() {
-        System.setProperty("webdriver.chrome.driver", "/Users/oscar/Oscar/Oscar/Docencia/Asignaturas/Curso2016-2017/Taller/chromedriver");
+        System.setProperty("webdriver.chrome.driver", pathToChromeDriver);
         webDriver = new ChromeDriver();
         // Wait before getting WebElements
         webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);

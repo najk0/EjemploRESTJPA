@@ -13,3 +13,5 @@ Una vez descargado el proyecto, ábrelo en Intellij:
  Si quieres crear automáticamente una serie de entradas en la agenda haz un **POST** a la dirección **http://localhost:8080/rest/people/generate/random?quantity=10** donde **quantity** indica el número de entradas que se generarán. Después, refresca el navegador.
  
  Lo más interesante de este ejemplo los son **test**
+
+ Para ejecutar los test con cucumber, necesitas descargarte el driver desde **https://sites.google.com/a/chromium.org/chromedriver/downloads**
