@@ -1,6 +1,6 @@
 package services;
 
-import data.People;
+    import data.People;
 import data.Person;
 import data.PostalAddress;
 import es.uji.www.GeneradorDatosINE;
