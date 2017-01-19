@@ -1,0 +1,7 @@
+.idea/
+*.iml
+derby.log
+prueba/
+target/
+test/
+src/main/webapp/node_modules/
