@@ -31,7 +31,7 @@ public class PersonService {
         if(retrievedPerson == PersonJPA.NOT_FOUND) {
             personJPA.create(person);
             return Response
-                    .status(Response.Status.OK)
+                    .status(Response.Status.CREATED)
                     .entity(person)
                     .build();
         } else {
