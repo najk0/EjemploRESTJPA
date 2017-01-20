@@ -30,9 +30,10 @@ public class PersonService {
         Person retrievedPerson = personJPA.retrieve(person.getNif());
         if(retrievedPerson == PersonJPA.NOT_FOUND) {
             personJPA.create(person);
+            retrievedPerson = personJPA.retrieve(person.getNif());
             return Response
                     .status(Response.Status.CREATED)
-                    .entity(person)
+                    .entity(retrievedPerson)
                     .build();
         } else {
             return Response
