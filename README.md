@@ -1,4 +1,4 @@
-# EjemploREST
+# EjemploRESTJPA
 Este ejemplo necesita que tengas instalado en tu repositorio local la biblioteca __GeneradorDatosINE__
 
 Una vez descargado el proyecto, ábrelo en Intellij:
