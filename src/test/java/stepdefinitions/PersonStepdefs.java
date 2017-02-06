@@ -42,7 +42,7 @@ public class PersonStepdefs {
     public void no_user_with_nif_exists(String nif) throws Throwable {
         try {
             webDriver.findElement(By.id(nif));
-            fail("There already is a Person with nif: " + nif);
+            fail("There is already a Person with nif: " + nif);
         } catch (NoSuchElementException e) {
         }
     }
