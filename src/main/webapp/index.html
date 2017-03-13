@@ -1,79 +1,23 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="agendaApp">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Agenda de teléfonos</title>
-
-    <link href="node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-    <link href="node_modules/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet">
-    <script src="node_modules/jquery/dist/jquery.js"></script>
-    <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="node_modules/angular/angular.js"></script>
-
-
-    <!-- Mis scripts-->
-    <script src="js/service.js"></script>
-
-</head>
-<body ng-controller="ContactosCtrl as contactosCtrl">
-<div class="container" >
-    <h1>My awesome agenda</h1>
-
-    <div class="panel panel-default">
-        <!-- Default panel contents -->
-        <div class="panel-heading">Contacts</div>
-        <div class="panel-body">
-            <p>List of people</p>
-        </div>
-        <div class="form">
-            <div class="input-group">
-                <input type="text" ng-model="name" placeholder="Name">
-                <input type="text" ng-model="surname" placeholder="Surname">
-                <input type="text" ng-model="nif" placeholder="NIF">
-                <button type="submit" ng-click="contactosCtrl.create(name, surname, nif)" class="btn btn-success">New</button>
-            </div>
-        </div>
-        <!-- Table -->
-        <table class="table">
-            <tr><th>Name</th><th>Surname</th><th>NIF</th><th></th></tr>
-            <tr ng-repeat="contact in contacts" id="{{contact.nif}}">
-                <td id="name">{{contact.name}}</td>
-                <td id="surname">{{contact.surname}}</td>
-                <td id="nif">{{contact.nif}}</td>
-                <td><button type="submit" class="btn btn-info" data-toggle="modal" data-target="#actualizar"
-                            ng-click="contactosCtrl.retreiveContact(contact.nif)">Update</button></td>
-                <td><button type="button" class="btn btn-danger" ng-click="contactosCtrl.delete(contact.nif)">Remove</button> </td>
-            </tr>
-        </table>
-    </div>
-
-
-    <!-- Ventana modal para actualizar -->
-    <div class="modal fade" id="actualizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true" >
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h3>Updating contact</h3>
-                    <h4 class="modal-title" id="myModalLabel">NIF: {{currentContact.nif}}</h4>
-                </div>
-                <div class="modal-body">
-                    Name: <input type="text" ng-model="currentContact.name">
-                    Surname: <input type="text" ng-model="currentContact.surname">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-info"
-                            ng-click="contactosCtrl.update(currentContact)"
-                            data-dismiss="modal">Update</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-</body>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>qWiki</title>
+		<link rel="stylesheet" type="text/css" href="./style.css">
+		<script>
+			function crearRuta() {
+				var page = document.getElementById("search").value;
+				window.location = "./rest/wiki/" + page;
+			}
+		</script>
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<img src="./qwikilogo.png"/>
+				<input type="text" placeholder="Search" id="search">
+				<input type="submit" onclick="crearRuta()" id="submit" value="Summarize">
+			</div>
+		</div>
+	</body>
 </html>
