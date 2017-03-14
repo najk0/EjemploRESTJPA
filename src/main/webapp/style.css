@@ -1,0 +1,44 @@
+body {
+	background-color: #00cc00;
+	color: #00ff00;
+	margin-top: 0;
+	margin-bottom:  0;
+}
+
+h1#title {
+	display: inline;
+}
+
+input#search {
+	display: inline;
+	max-width: 75%;
+	min-width: 50%;
+	height: 33px;
+}
+
+input#submit {
+	display: inline;
+	min-width: 80px;
+	width: 10%;
+	height: 40px;
+}
+
+div#wrapper {
+	background-color: #457886;
+	margin: auto;
+	width: 80%;
+	height: 100vh;
+	text-align: center;
+	padding-top: 40px;
+}
+
+div#header {
+	vertical-align: middle;
+	height: 50px;
+	display: inline-block
+}
+
+label#brand {
+	font-weight: bold;
+	font-size: 28pt;
+}
