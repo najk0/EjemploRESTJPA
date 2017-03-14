@@ -1,20 +1,21 @@
 package data;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Map.Entry;
-import java.util.Set;
 
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Page {
-    @XmlElement(name = "page")
-    private Set<Entry<String, JsonElement>> content;
+    private String title;
+    private String text;
 
-    public Page(JsonObject json) {
-        this.content = json.entrySet();
+    public Page() { super(); }
+
+    public Page(String title, String text) {
+        this.title = title;
+        this.text = text;
     }
 
 }

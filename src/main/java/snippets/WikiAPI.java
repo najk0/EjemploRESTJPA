@@ -16,6 +16,8 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import com.mashape.unirest.request.body.MultipartBody;
+import data.Page;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class WikiAPI {
@@ -31,18 +33,32 @@ public class WikiAPI {
     }
 
 
-    public JSONObject getPageText(String title) {
+    public Page getPage(String title) {
         MultipartBody mb = getBaseBody();
         mb.field("action", "query")
                 .field("prop", "extracts")
                 .field("explaintext", 1)
                 .field("exsectionformat", "plain")
+                .field("indexpageids", 1)
                 .field("titles", title);
         try {
-            return mb.asJson().getBody().getObject();
+            JSONObject json = mb.asJson().getBody().getObject();
+            for (String element : json.keySet()) {
+                System.out.println(element);
+            }
+            JSONObject arrayQuery = json.getJSONObject("query");
+            JSONArray pagesArray = arrayQuery.getJSONArray("pageids");
+            String pageID = pagesArray.getString(0);
+            JSONObject arrayPages = arrayQuery.getJSONObject("pages");
+            JSONObject arrayID = arrayPages.getJSONObject(pageID);
+            String text = arrayID.getString("extract");
+            System.out.println(text);
+            Page page = new Page(title, text);
+            return page;
         } catch (UnirestException e) {
             e.printStackTrace();
         }
+        System.err.println("oops! ---------------------------------------------");
         return null; // TODO
     }
 

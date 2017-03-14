@@ -3,9 +3,7 @@ package services;
 import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
-import data.GenericJson;
-import data.Page;
-import data.Person;
+import data.*;
 import org.json.JSONObject;
 import snippets.WikiAPI;
 import store.PersonJPA;
@@ -29,13 +27,11 @@ public class WikiService {
     @Produces({"application/xml", "application/json"})
     @Path("{title}")
     public Response retrieve(@PathParam("title") String title) {
-        JSONObject jsonResponse = api.getPageText(title);
-        GenericJson json = new GenericJson(jsonResponse);
-        System.out.println("jsonResponse");
-        System.out.println(jsonResponse.toString());
+        Page page = api.getPage(title);
+        Page p = new Page("asd", "123");
         return Response
                 .status(Response.Status.OK)
-                .entity(json)
+                .entity(page)
                 .build();
     }
 
