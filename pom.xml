@@ -14,12 +14,8 @@
     </properties>
 
     <dependencies>
-        <!--Biblioteca para generar datos aleatorios-->
-        <dependency>
-            <groupId>es.uji.belfern</groupId>
-            <artifactId>GeneradorDatosINE</artifactId>
-            <version>0.0.1</version>
-        </dependency>
+
+
 
         <!--Paquete básico para JAX-RS-->
         <dependency>

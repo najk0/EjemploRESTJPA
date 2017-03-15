@@ -1,24 +1,17 @@
 package snippets;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequestWithBody;
 import com.mashape.unirest.request.body.MultipartBody;
 import data.Page;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class WikiAPI {
 
@@ -26,7 +19,6 @@ public class WikiAPI {
 
     private String lang = "en";
 
-    // https://www.mediawiki.org/wiki/API:Data_formats
 
     public WikiAPI() {
         //mapper();
@@ -46,11 +38,12 @@ public class WikiAPI {
             for (String element : json.keySet()) {
                 System.out.println(element);
             }
-            JSONObject arrayQuery = json.getJSONObject("query");
-            JSONArray pagesArray = arrayQuery.getJSONArray("pageids");
-            String pageID = pagesArray.getString(0);
-            JSONObject arrayPages = arrayQuery.getJSONObject("pages");
-            JSONObject arrayID = arrayPages.getJSONObject(pageID);
+            JSONObject arrayQuery   = json.getJSONObject("query");
+            JSONArray pagesArray    = arrayQuery.getJSONArray("pageids");
+            String pageID           = pagesArray.getString(0);
+            JSONObject arrayPages   = arrayQuery.getJSONObject("pages");
+            JSONObject arrayID      = arrayPages.getJSONObject(pageID);
+
             String text = arrayID.getString("extract");
             System.out.println(text);
             Page page = new Page(title, text);
@@ -83,21 +76,8 @@ public class WikiAPI {
     }
 
 
-    public void goodshittest() throws UnirestException {
-        HttpResponse<JsonNode> jsonResponse = getBaseBody()
-                .field("action", "query")
-                .field("titles", "Main Page")
-                .field("prop", "revisions")
-                .field("rvprop", "content")
-                .asJson();
-
-        System.out.println(jsonResponse.getBody());
-    }
-
-
     public static void main(String[] args) throws UnirestException {
         WikiAPI api = new WikiAPI();
-        //api.goodshittest();
     }
 
     // http://unirest.io/java.html (Serialization)

@@ -1,12 +1,7 @@
 package services;
 
-import com.google.gson.JsonObject;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import data.*;
-import org.json.JSONObject;
+import data.Page;
 import snippets.WikiAPI;
-import store.PersonJPA;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
