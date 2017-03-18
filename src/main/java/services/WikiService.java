@@ -23,8 +23,9 @@ public class WikiService {
     @Path("{title}")
     public Response retrieve(@PathParam("title") String title) {
         Page page = api.getPage(title);
-        Page p = new Page("asd", "123");
-        return Response
+        //Page p      = new Page("asd", "123");
+
+        return  Response
                 .status(Response.Status.OK)
                 .entity(page)
                 .build();

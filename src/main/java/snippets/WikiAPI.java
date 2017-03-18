@@ -35,19 +35,16 @@ public class WikiAPI {
                 .field("titles", title);
         try {
             JSONObject json = mb.asJson().getBody().getObject();
+
             for (String element : json.keySet()) {
                 System.out.println(element);
             }
-            JSONObject arrayQuery   = json.getJSONObject("query");
-            JSONArray pagesArray    = arrayQuery.getJSONArray("pageids");
-            String pageID           = pagesArray.getString(0);
-            JSONObject arrayPages   = arrayQuery.getJSONObject("pages");
-            JSONObject arrayID      = arrayPages.getJSONObject(pageID);
 
-            String text = arrayID.getString("extract");
+            String text = getExtractText(json);
+
             System.out.println(text);
-            Page page = new Page(title, text);
-            return page;
+
+            return new Page(title, text);
         } catch (UnirestException e) {
             e.printStackTrace();
         }
@@ -55,6 +52,15 @@ public class WikiAPI {
         return null; // TODO
     }
 
+    private String getExtractText(JSONObject json){//TODO revisar nombre, no me gusta
+        JSONObject arrayQuery   = json.getJSONObject("query");
+        JSONArray pagesArray    = arrayQuery.getJSONArray("pageids");
+        String pageID           = pagesArray.getString(0);
+        JSONObject arrayPages   = arrayQuery.getJSONObject("pages");
+        JSONObject arrayID      = arrayPages.getJSONObject(pageID);
+
+        return arrayID.getString("extract");
+    }
 
     public void setLang(String lang) {
         this.lang = lang;
@@ -63,10 +69,9 @@ public class WikiAPI {
 
 
     private MultipartBody getBaseBody() {
-        MultipartBody mb = Unirest.post(getBaseURL())
+        return  Unirest.post(getBaseURL())
                 .header("accept", "application/json")
                 .field("format", "json");
-        return mb;
     }
 
 

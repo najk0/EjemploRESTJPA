@@ -13,8 +13,8 @@ public class Page {
     public Page() { super(); }
 
     public Page(String title, String text) {
-        this.title = title;
-        this.text = text;
+        this.title  = title;
+        this.text   = text;
     }
 
 }
