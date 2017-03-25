@@ -1,7 +1,7 @@
 package services;
 
-import data.Article;
 import api.WikiAPI;
+import data.Article;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -9,12 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-@Path("api")
-public class WikiService {
+@Path("test")
+public class WikiTest {
 
     private WikiAPI api;
 
-    public WikiService() {
+    public WikiTest() {
         api = new WikiAPI();
     }
 
@@ -23,6 +23,7 @@ public class WikiService {
     @Path("{title}")
     public Response retrieve(@PathParam("title") String title) {
         Article article = api.getArticle(title);
+        System.out.println(article);
 
         return  Response
                 .status(Response.Status.OK)
