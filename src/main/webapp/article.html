@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>qWiki</title>
+		<link rel="stylesheet" type="text/css" href="./style.css">
+		<script>
+			function crearRuta() {
+				var page = document.getElementById("search").value;
+				window.location = "./rest/wiki/" + page;
+			}
+		</script>
+	</head>
+	<body>
+		<div id="header">
+			<span id="logo">qWiki</span>
+			<input class="form-control" type="text" placeholder="Search" id="search">
+			<input class="form-control" type="submit" onclick="crearRuta()" id="submit" value="Summarize">
+		</div>
+
+		<div id="content">
+			<div id="navigation">
+				<button class="accordion">Section 1</button>
+				<div class="panel">
+				  <button>Section 1.1</button>
+				  <div class="panel"></div>
+				</div>
+
+				<button class="accordion">Section 2</button>
+				<div class="panel">
+				   <button>Section 2.1</button>
+				  <div class="panel"></div>
+				  <button>Section 2.2</button>
+				  <div class="panel"></div>
+				  <button class="accordion">Section 2.3</button>
+				  <div class="panel">
+					  <button>Section 2.3.1</button>
+					  <div class="panel"></div>
+					  <button>Section 2.3.2</button>
+					  <div class="panel"></div>
+				  </div>
+				</div>
+
+				<button>Section 3</button>
+				<div class="panel">
+				 	
+				</div>
+			</div>
+			<div id="text">
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+			</div>
+		</div>
+		<!-- Este script debe ejecutarse tras cargarse la página para que funcione correctamente. -->
+		<script src="./js/accordion.js"></script>
+	</body>
+</html>
