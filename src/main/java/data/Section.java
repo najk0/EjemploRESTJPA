@@ -75,8 +75,8 @@ public class Section {
         sb.append(number).append(" - ").append(name).append(":\n");
         // Y si lo tenemos, parte del contenido
         if (content != null) {
-            sb.append("\t").append(content.substring(0, 50));
-            if (content.length() > 50) sb.append("...");
+            sb.append("\t").append(content.substring(0, Math.min(content.length(), 150)));
+            if (content.length() > 150) sb.append("...");
             sb.append("\n");
         }
 

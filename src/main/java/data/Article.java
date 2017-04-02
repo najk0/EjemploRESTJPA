@@ -3,7 +3,7 @@ package data;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -13,7 +13,7 @@ public class Article {
 
     private String topText;
 
-    private ArrayList<Section> sections;
+    private List<Section> sections;
 
 
     public Article() {
@@ -36,11 +36,11 @@ public class Article {
         this.topText = topText;
     }
 
-    public ArrayList<Section> getSections() {
+    public List<Section> getSections() {
         return sections;
     }
 
-    public void setSections(ArrayList<Section> sections) {
+    public void setSections(List<Section> sections) {
         this.sections = sections;
     }
 

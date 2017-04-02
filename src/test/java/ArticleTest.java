@@ -14,7 +14,7 @@ public class ArticleTest {
 
     @Test
     public void test() {
-        String title = "Mass";
+        String title = "Queen(band)"; // Wicket gate
         Article article = api.getArticle(title);
         System.out.println(article);
     }
