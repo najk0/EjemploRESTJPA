@@ -8,6 +8,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Section {
 
+    /* Definición de la sección inicial o cabecera, antes de todas
+    las demás secciones, inicializada por defecto con esta información. */
+    public static final Section HEADER = new Section();
+    static {
+        HEADER.setName("Introduction");
+        HEADER.setDepth(0);
+        HEADER.setNumber("0");
+        HEADER.setIndex(0);
+        HEADER.setAnchor("Introduction");
+    }
+
+    private String anchor;
+
     private String name;
 
     private int index; // p.e. 3
@@ -21,6 +34,14 @@ public class Section {
 
     public Section() {
         super();
+    }
+
+    public String getAnchor() {
+        return anchor;
+    }
+
+    public void setAnchor(String anchor) {
+        this.anchor = anchor;
     }
 
     public String getName() {
