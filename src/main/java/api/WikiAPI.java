@@ -4,7 +4,9 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.body.MultipartBody;
 import data.Article;
+import data.RawSection;
 import data.Section;
+import data.Sections;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -23,42 +25,8 @@ public class WikiAPI {
     }
 
     public Article getArticle(String title) {
-        Article a = new Article();
-
-        MultipartBody mb = getBaseBody();
-        mb.field("action", "parse")
-                .field("prop", "sections")
-                .field("page", title)
-                .field("redirects", 1);
-
-        try {
-            JSONObject json = mb.asJson().getBody().getObject();
-            // Obtenemos el título del artículo a partir del resultado de la API
-            // y no de el texto usado para encontrar el artículo ya que debido a
-            // redirecciones y otras causas el título final del artículo podría variar
-            JSONObject parse = json.getJSONObject("parse");
-            String articleTitle = parse.getString("title");
-            a.setTitle(articleTitle);
-
-            List<Section> sections = getSectionsFromParse(json);
-            String articleTextPlain = getArticleTextPlain(title);
-            System.out.println("articletext: " + articleTextPlain);
-            for(int i = 0; i < sections.size(); i++) {
-                String currentSectionName = sections.get(i).getName();
-                String nextSectionName = null;
-                if ((i + 1) < sections.size()) {
-                    nextSectionName = sections.get(i + 1).getName();
-                }
-                String sectionText = getSectionTextPlain(articleTextPlain, currentSectionName, nextSectionName);
-                sections.get(i).setContent(sectionText);
-            }
-            a.setSections(sections);
-
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        }
-
-        return a;
+        StructuredArticle sa = getStructuredArticle(title);
+        return sa.asArticle();
     }
 
     @Deprecated
@@ -137,8 +105,11 @@ public class WikiAPI {
             JSONObject textObject = parseObject.getJSONObject("text");
             String articleHTML = textObject.getString("*");
 
+
+            // Preciosos los nombres
             JSONArray sectionsArray = parseObject.getJSONArray("sections");
-            List<Section> sections = getSections(sectionsArray);
+            List<RawSection> noHierarchySections = getRawSections(sectionsArray);
+            Sections sections = new Sections(noHierarchySections);
 
             return new StructuredArticle(trueArticleTitle, articleHTML, sections);
 
@@ -206,28 +177,12 @@ public class WikiAPI {
         return text;
     }
 
-    public ArrayList<Section> getSections(JSONArray sections) {
-        ArrayList<Section> articleSections = new ArrayList<Section>();
+    public ArrayList<RawSection> getRawSections(JSONArray sections) {
+        ArrayList<RawSection> articleSections = new ArrayList<>();
 
         for(int i = 0; i < sections.length(); i++) {
-            JSONObject section = sections.getJSONObject(i);
-            Section articleSection = new Section();
-
-            String anchor = section.getString("anchor");
-            articleSection.setAnchor(anchor);
-
-            String name = section.getString("line");
-            articleSection.setName(name);
-
-            String index = section.getString("index");
-            articleSection.setIndex(Integer.parseInt(index));
-
-            String number = section.getString("number");
-            articleSection.setNumber(number);
-
-            String level = section.getString("level");
-            articleSection.setDepth(Integer.parseInt(level) - 1);
-
+            JSONObject jsonSection = sections.getJSONObject(i);
+            RawSection articleSection = new RawSection(jsonSection);
             articleSections.add(articleSection);
         }
         return articleSections;

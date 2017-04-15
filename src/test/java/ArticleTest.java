@@ -1,5 +1,5 @@
-import api.StructuredArticle;
 import api.WikiAPI;
+import data.Article;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -14,7 +14,8 @@ public class ArticleTest {
 
     @Test
     public void test() {
-        String title = "Mass"; // Wicket gate
-        StructuredArticle strArt = api.getStructuredArticle(title);
+        String title = "Society"; // Wicket gate
+        Article article = api.getArticle(title);
+        System.out.println(article.toString());
     }
 }

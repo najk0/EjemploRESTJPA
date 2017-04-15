@@ -1,6 +1,5 @@
 package services;
 
-import api.StructuredArticle;
 import data.Article;
 import api.WikiAPI;
 
@@ -23,8 +22,9 @@ public class WikiService {
     @Produces({"application/xml", "application/json"})
     @Path("{title}")
     public Response retrieve(@PathParam("title") String title) {
-        StructuredArticle structArticle = api.getStructuredArticle(title);
-        Article article = structArticle.asArticle();
+        Article article = api.getArticle(title);
+        System.out.println("Requested article " + title);
+        System.out.println(article);
 
         return  Response
                 .status(Response.Status.OK)

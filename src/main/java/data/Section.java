@@ -13,7 +13,7 @@ public class Section {
     public static final Section HEADER = new Section();
     static {
         HEADER.setName("Introduction");
-        HEADER.setDepth(0);
+        HEADER.setDepth(2);
         HEADER.setNumber("0");
         HEADER.setIndex(0);
         HEADER.setAnchor("Introduction");
@@ -29,11 +29,20 @@ public class Section {
 
     private int depth;
 
-    private String content; // Texto que contiene la sección
+    private Content content; // El contenido en texto plano TODO quitar
 
 
     public Section() {
         super();
+    }
+
+    public Section(RawSection rs) {
+        super();
+        this.anchor = rs.getAnchor();
+        this.index = Integer.parseInt(rs.getIndex());
+        this.number = rs.getNumber();
+        this.depth = Integer.parseInt(rs.getLevel());
+        this.name = rs.getLine();
     }
 
     public String getAnchor() {
@@ -76,18 +85,18 @@ public class Section {
         this.depth = depth;
     }
 
-    public String getContent() {
+    public Content getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(Content content) {
         this.content = content;
     }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
         // Imprimimos el índice que determina el orden de las secciones
-        sb.append(index).append(" ");
+        sb.append("(").append(index).append(") ");
         // Indentamos las subsecciones
         for(int i = 0; i < depth; i++) {
             sb.append("\t");
@@ -96,8 +105,14 @@ public class Section {
         sb.append(number).append(" - ").append(name).append(":\n");
         // Y si lo tenemos, parte del contenido
         if (content != null) {
-            sb.append("\t").append(content.substring(0, Math.min(content.length(), 150)));
-            if (content.length() > 150) sb.append("...");
+            String contentPlaintext = content.getPlaintext();
+            contentPlaintext.replace("\n", ""); // Eliminamos cualquier salto de línea para mejorar la legibilidad
+            // Indentamos el contenido de cada sección
+            for(int i = 0; i < depth + 3; i++) {
+                sb.append("\t");
+            }
+            sb.append(contentPlaintext.substring(0, Math.min(contentPlaintext.length(), 80)));
+            if (contentPlaintext.length() > 80) sb.append("...");
             sb.append("\n");
         }
 
