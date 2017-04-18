@@ -7,17 +7,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Article {
 
     @XmlAttribute
-    private final String title;
+    private String title;
 
-    @XmlAttribute
-    private final Sections sections;
 
+    private Sections sections;
+
+
+    public Article() {
+        super();
+        title = "NULL";
+        sections = new Sections();
+    }
 
     public Article(String title, Sections sections) {
-        super();
+        this();
         this.title = title;
         this.sections = sections;
     }

@@ -1,8 +1,6 @@
 package data;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -19,16 +17,22 @@ public class Section {
         HEADER.setAnchor("Introduction");
     }
 
+    @XmlAttribute
     private String anchor;
 
+    @XmlAttribute
     private String name;
 
+    @XmlAttribute
     private int index; // p.e. 3
 
+    @XmlAttribute
     private String number; // p.e 1.3
 
+    @XmlAttribute
     private int depth;
 
+    @XmlElement
     private Content content; // El contenido en texto plano TODO quitar
 
 
@@ -37,7 +41,7 @@ public class Section {
     }
 
     public Section(RawSection rs) {
-        super();
+        this();
         this.anchor = rs.getAnchor();
         this.index = Integer.parseInt(rs.getIndex());
         this.number = rs.getNumber();

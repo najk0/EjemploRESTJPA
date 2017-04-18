@@ -3,10 +3,7 @@ package api;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.body.MultipartBody;
-import data.Article;
-import data.RawSection;
-import data.Section;
-import data.Sections;
+import data.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -120,7 +117,53 @@ public class WikiAPI {
         return null;
     }
 
+    public SearchResults getSearchResults(String keywords) {
+        MultipartBody mb = getBaseBody();
+        mb.field("action", "opensearch")
+                .field("prop", "sections|text|displaytitle")
+                .field("search", keywords)
+                .field("namespace", 0)
+                .field("limit", 10)
+                .field("redirects", "return");
+        try {
+            JSONArray json = mb.asJson().getBody().getArray();
+
+            // Convertimos los arrays en JSON a listas de String
+            JSONArray tempJSONArray = json.getJSONArray(1);
+            List<String> titlesList = new ArrayList<>();
+            for(int i = 0; i < tempJSONArray.length(); i++) {
+                String title = tempJSONArray.getString(i);
+                titlesList.add(title);
+            }
+
+            tempJSONArray = json.getJSONArray(2);
+            List<String> descriptionsList = new ArrayList<>();
+            for(int i = 0; i < tempJSONArray.length(); i++) {
+                String description = tempJSONArray.getString(i);
+                descriptionsList.add(description);
+            }
+
+            tempJSONArray = json.getJSONArray(3);
+            List<String> linksList = new ArrayList<>();
+            for(int i = 0; i < tempJSONArray.length(); i++) {
+                String link = tempJSONArray.getString(i);
+                linksList.add(link);
+            }
+
+            // Construimos el objeto que encapsula los resultados de búsqueda
+            // a partir de las tres listas de resultados ya saneadas
+            SearchResults srs = new SearchResults(titlesList, descriptionsList, linksList);
+            return srs;
+
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+        List<String> emptyStringList = new ArrayList<>();
+        return new SearchResults(emptyStringList, emptyStringList, emptyStringList);
+    }
+
     //action=query&format=json&prop=extracts&titles=Wicket_gate&utf8=1&exsectionformat=raw
+    @Deprecated
     public String getArticleTextHTML(String title) {
         String html = null;
 

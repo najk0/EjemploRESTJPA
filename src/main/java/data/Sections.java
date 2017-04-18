@@ -1,26 +1,37 @@
 package data;
 
-import com.fasterxml.jackson.databind.deser.DataFormatReaders;
-
+import javax.xml.bind.annotation.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Sections implements Iterable<Section> {
 
+    @XmlElementWrapper
+    @XmlElement(name="searchResult")
     private Map<String, Section> sectionList;
 
     // Contiene los números (p.e. 1.2) de las secciones en el orden en el que aparecen
     // de manera que podemos recuperar la lista de secciones del mapa en tiempo O(n)
-    private final List<String> sortedSectionNumbers;
+    @XmlElementWrapper
+    @XmlElement(name="sectionNumber")
+    private List<String> sortedSectionNumbers;
 
-    private final int size;
+    @XmlAttribute
+    private int size;
 
 
-    public Sections(List<RawSection> rawSectionList) {
+    public Sections() {
+        super();
         sortedSectionNumbers = new ArrayList<>();
         sectionList = new HashMap<>();
+        size = 0;
+    }
+
+    public Sections(List<RawSection> rawSectionList) {
+        this();
         // Añadimos la sección de introducción que no está contenida en la
         // lista de secciones sacadas de la API. El tamaño por tanto es +1
         sectionList.put("0", Section.HEADER);
@@ -45,6 +56,10 @@ public class Sections implements Iterable<Section> {
 
     public int getSize() {
         return size;
+    }
+
+    public Map<String, Section> getSectionList() {
+        return sectionList;
     }
 
     // Devuelve una lista de todas las secciones hijas dado su número

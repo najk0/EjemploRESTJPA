@@ -4,26 +4,41 @@ import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Content {
 
-    private final String html;
+    @XmlElement
+    private String rawHTML;
 
-    private final String plaintext;
+    @XmlElement
+    private String plaintext;
 
-    private final List<Paragraph> paragraphs; // TODO mejorar
+    @XmlElementWrapper
+    @XmlElement(name="p")
+    private List<Paragraph> paragraphs; // TODO mejorar
 
+
+    public Content() {
+        super();
+        rawHTML = "NULL";
+        plaintext = "NULL";
+        paragraphs = new ArrayList<>();
+    }
 
     public Content(String html) {
-        this.html = html;
+        this();
+        this.rawHTML = html;
         this.paragraphs = getParagraphs(html);
         this.plaintext = getAllPlainText(paragraphs);
     }
 
-    public String getHtml() {
-        return html;
+    public String getRawHTML() {
+        return rawHTML;
     }
 
     public String getPlaintext() {
@@ -55,13 +70,25 @@ public class Content {
 
 }
 
-
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 class Paragraph {
 
-    private final String html, plain;
+    @XmlElement
+    private String html;
 
+    @XmlElement
+    private String plain;
+
+
+    public Paragraph() {
+        super();
+        html = "NULL";
+        plain = "NULL";
+    }
 
     public Paragraph(Element p) {
+        this();
         this.html = p.toString();
         this.plain = p.getTextExtractor().toString();
     }
