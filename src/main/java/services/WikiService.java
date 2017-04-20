@@ -1,11 +1,8 @@
 package services;
 
 import com.sun.org.apache.xpath.internal.SourceTree;
-import data.Article;
+import data.*;
 import api.WikiAPI;
-import data.SearchResult;
-import data.SearchResults;
-import data.Simple;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -64,18 +61,19 @@ public class WikiService {
                 .build();
     }
 
-    /*
+
     @GET
     @Produces({"application/xml"})
-    @Path("simple")
-    public Response simple(String keywords) {
-        System.out.println("Testing simple response");
+    @Path("{keywords}/info")
+    public Response getArticleInfo(@PathParam("keywords") String keywords) {
+        ArticleInfo info = api.getArticleInfo(keywords);
+        System.out.println("Search for article \"" + keywords +
+                "\" returned article: " + info.getArticleName());
 
         return  Response
                 .status(Response.Status.OK)
-                .entity(new Simple("ASD"))
-
+                .entity(info)
                 .build();
-    }*/
+    }
 
 }

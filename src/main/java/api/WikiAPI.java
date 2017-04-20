@@ -7,6 +7,8 @@ import data.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -26,64 +28,6 @@ public class WikiAPI {
         return sa.asArticle();
     }
 
-    @Deprecated
-    private String getSectionTextPlain(String articleTextPlain, String sectionTitle, String nextSectionTitle) {
-        String leftPattern = "(\\n)+\\b" + sectionTitle + "\\b(\\n)+";
-        String rightPattern;
-        if (nextSectionTitle == null) {
-            rightPattern = "$"; // Fin del texto
-        } else {
-            rightPattern = "(\\n)+\\b" + nextSectionTitle + "\\b";
-        }
-
-        Pattern lp = Pattern.compile(leftPattern);
-        Matcher lm = lp.matcher(articleTextPlain);
-        if (lm.find()) {
-            int leftIndex = lm.end(0);
-            System.out.println("leftIndex " + leftIndex);
-
-            Pattern rp = Pattern.compile(rightPattern);
-            Matcher rm = rp.matcher(articleTextPlain);
-            if (rm.find()) {
-                int rightIndex = rm.start(0);
-                rightIndex = Math.max(leftIndex, rightIndex);
-                System.out.println("rightIndex " + rightIndex);
-
-                String sectionText = articleTextPlain.substring(leftIndex, rightIndex);
-                System.out.println("S: " + sectionTitle);
-                System.out.println("T: " + sectionText);
-                System.out.println();
-                return sectionText;
-            }
-            System.out.println();
-        }
-        return null;
-    }
-
-    @Deprecated
-    private String getSectionTextHTMLArticle(String articleTitle, int sectionIndex) {
-        MultipartBody mb = getBaseBody();
-        mb.field("action", "parse")
-                .field("prop", "text")
-                .field("page", articleTitle)
-                .field("section", sectionIndex)
-                .field("redirects", 1);
-
-        try {
-            JSONObject json = mb.asJson().getBody().getObject();
-
-            JSONObject parseObject = json.getJSONObject("parse");
-            JSONObject textObject = parseObject.getJSONObject("text");
-            String sectionText = textObject.getString("*");
-
-            return sectionText;
-
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
     public StructuredArticle getStructuredArticle(String title) {
         MultipartBody mb = getBaseBody();
@@ -162,33 +106,62 @@ public class WikiAPI {
         return new SearchResults(emptyStringList, emptyStringList, emptyStringList);
     }
 
-    //action=query&format=json&prop=extracts&titles=Wicket_gate&utf8=1&exsectionformat=raw
-    @Deprecated
-    public String getArticleTextHTML(String title) {
-        String html = null;
 
+    public ArticleInfo getArticleInfo(String keywords) {
+        String urlEncodedKeywords = urlEncode(keywords);
         MultipartBody mb = getBaseBody();
         mb.field("action", "query")
-                .field("prop", "extracts")
-                .field("exsectionformat", "raw")
+                .field("prop", "categories|pageprops")
                 .field("indexpageids", 1)
-                .field("titles", title);
+                .field("redirects", 1)
+                .field("clcategories",
+                        "Category:Disambiguation pages" +
+                                "|Category:All disambiguation pages" +
+                                "|Category:All article disambiguation pages")
+                .field("ppprop", "disambiguation")
+                .field("titles", urlEncodedKeywords);
         try {
             JSONObject json = mb.asJson().getBody().getObject();
 
             JSONObject queryObject = json.getJSONObject("query");
             JSONArray pagesArray = queryObject.getJSONArray("pageids");
-            String pageID = pagesArray.getString(0);
-            JSONObject arrayPages = queryObject.getJSONObject("pages");
-            JSONObject arrayID = arrayPages.getJSONObject(pageID);
+            String pageId = pagesArray.getString(0);
 
-            html = arrayID.getString("extract");
+            // Si el artículo no existe, el pageid es el String "-1"
+            if ("-1".equals(pageId)) {
+                return new ArticleInfo();
+            }
+
+            // El nombre de artículo real puede no coincidir con el usado para encontrarlo
+            // por ejemplo, "queen" da lugar al artículo "Queen". Esto no es una redirección
+            // sino el criterio que sigue Wikipedia para nombrar los artículos.
+            String articleNameNormalized;
+            // Comprobamos si el artículo redirige a otro
+            if (queryObject.has("redirects")) {
+                JSONArray redirectsArray = queryObject.getJSONArray("redirects");
+                JSONObject redirectsObject = redirectsArray.getJSONObject(0);
+                articleNameNormalized = redirectsObject.getString("from");
+                String redirectsTo = redirectsObject.getString("to");
+                return new ArticleInfo(articleNameNormalized, redirectsTo);
+            }
+
+            // Nos adentramos en la jerarquía del JSON para buscar las categorías a las que pertenece
+            JSONObject pagesObject = queryObject.getJSONObject("pages");
+            JSONObject idObject = pagesObject.getJSONObject(pageId);
+            articleNameNormalized = idObject.getString("title");
+            // Dado el query, sólo obtenemos categorías de desambiguación, por lo que
+            // si tiene alguna de ellas, se trata de un artículo de desambiguación
+            if (idObject.has("categories")) {
+                return new ArticleInfo(articleNameNormalized, true);
+            }
+
+            // Llegado a este punto, el artículo sólo puede ser uno corriente y moliente
+            return new ArticleInfo(articleNameNormalized);
 
         } catch (UnirestException e) {
             e.printStackTrace();
         }
-
-        return html;
+        return null;
     }
 
     @Deprecated
@@ -259,6 +232,16 @@ public class WikiAPI {
         return articleSections;
     }
 
+    private String urlEncode(String unencodedString) {
+        String urlEncodedString = null;
+        try {
+            urlEncodedString = URLEncoder.encode(unencodedString, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            //No pasa nunca porque la codificación es siempre la misma y es válida
+        }
+        return urlEncodedString;
+    }
+
     public void setLang(String lang) {
         this.lang = lang;
     }
@@ -278,5 +261,7 @@ public class WikiAPI {
     public static void main(String[] args) throws UnirestException {
         WikiAPI api = new WikiAPI();
     }
+
+
 
 }
