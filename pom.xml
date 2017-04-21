@@ -134,7 +134,11 @@
             <artifactId>jericho-html</artifactId>
             <version>3.3</version>
         </dependency>
-
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>gherkin</artifactId>
+            <version>RELEASE</version>
+        </dependency>
 
 
     </dependencies>

@@ -1,5 +1,7 @@
 package services;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
 import com.sun.org.apache.xpath.internal.SourceTree;
 import data.*;
 import api.WikiAPI;
@@ -21,8 +23,9 @@ public class WikiService {
     }
 
     @GET
-    @Produces({"application/xml"})
+    @Produces({"application/json"})
     @Path("{title}")
+    @JacksonFeatures(serializationEnable =  { SerializationFeature.INDENT_OUTPUT })
     public Response retrieve(@PathParam("title") String title) {
         Article article = api.getArticle(title);
         System.out.println("Requested article: " + title);
@@ -35,7 +38,7 @@ public class WikiService {
     }
 
     @GET
-    @Produces({"application/xml"})
+    @Produces({"application/json"})
     @Path("{title}/sections")
     public Response retrieveSections(@PathParam("title") String title) {
         Article article = api.getArticle(title);
@@ -49,7 +52,7 @@ public class WikiService {
 
 
     @GET
-    @Produces({"application/xml"})
+    @Produces({"application/json"})
     @Path("{keywords}/search")
     public Response search(@PathParam("keywords") String keywords) {
         SearchResults results = api.getSearchResults(keywords);
@@ -63,7 +66,7 @@ public class WikiService {
 
 
     @GET
-    @Produces({"application/xml"})
+    @Produces({"application/json"})
     @Path("{keywords}/info")
     public Response getArticleInfo(@PathParam("keywords") String keywords) {
         ArticleInfo info = api.getArticleInfo(keywords);
