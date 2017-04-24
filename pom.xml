@@ -13,9 +13,30 @@
         <java.version>1.8</java.version>
     </properties>
 
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+
     <dependencies>
 
+        <dependency>
+            <groupId>com.github.yaraju</groupId>
+            <artifactId>Classifier4J</artifactId>
+            <version>-SNAPSHOT</version>
+        </dependency>
 
+
+
+        <dependency>
+            <groupId>com.github.CNGLdlab</groupId>
+            <artifactId>CNGLSummarizer</artifactId>
+            <version>6cd5e1ea28</version>
+        </dependency>
 
         <!--Paquete básico para JAX-RS-->
         <dependency>
