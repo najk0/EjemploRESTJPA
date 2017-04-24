@@ -25,7 +25,6 @@ public class WikiService {
     @GET
     @Produces({"application/json"})
     @Path("{title}")
-    @JacksonFeatures(serializationEnable =  { SerializationFeature.INDENT_OUTPUT })
     public Response retrieve(@PathParam("title") String title) {
         Article article = api.getArticle(title);
         System.out.println("Requested article: " + title);
