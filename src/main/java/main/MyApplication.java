@@ -13,7 +13,9 @@ public class MyApplication extends ResourceConfig {
         packages("services");
         register(JacksonFeatures.class);
         register(new MyApplicationBinder());
+        // JSON PrettyPrint
         register(new ObjectMapperProvider());
+        // Access-Control-Allow-Origin headers para Angular2
         register(new CORSFilter());
     }
 }

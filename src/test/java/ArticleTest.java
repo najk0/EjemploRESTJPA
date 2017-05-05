@@ -1,5 +1,6 @@
 import api.WikiAPI;
 import data.Article;
+import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -14,8 +15,8 @@ public class ArticleTest {
 
     @Test
     public void test() {
-        String title = "Society"; // Wicket gate
-        Article article = api.getArticle(title);
-        System.out.println(article.toString());
+        //String title = "-1"; // Wicket gate
+        //JSONObject json = api.getArticleJSON(title);
+        //System.out.println(json.toString(2));
     }
 }

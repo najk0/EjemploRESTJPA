@@ -88,4 +88,16 @@ public class ArticleInfo {
         return str != null && str.length() > 0;
     }
 
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ArticleInfo] {");
+        sb.append("\n\texists: ").append(exists());
+        sb.append("\n\tarticleName: ").append(getArticleName());
+        sb.append("\n\tredirectsTo: ").append(getRedirectsTo());
+        sb.append("\n\tisDisambiguation: ").append(isDisambiguation());
+        sb.append("\n}");
+        return sb.toString();
+    }
+
 }

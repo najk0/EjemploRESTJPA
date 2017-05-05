@@ -8,6 +8,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,42 +26,88 @@ public class WikiAPI {
 
     }
 
+
+    // http://regexr.com/
+    public boolean isValidLink(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        Pattern p = Pattern.compile("((http)(s)?:\\/\\/)?(en\\.)?(wikipedia.org\\/wiki\\/[\\w]+)");
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
+
+
+    public String getTitleFromLink(String link) {
+        String baseUrl = "wikipedia.org/wiki/";
+        int startIndex = link.indexOf(baseUrl);
+        return link.substring(startIndex + baseUrl.length());
+    }
+
     public Article getArticle(String title) {
         StructuredArticle sa = getStructuredArticle(title);
         return sa.asArticle();
     }
 
-
-    public StructuredArticle getStructuredArticle(String title) {
+    // Link al Sandbox:
+    // https://en.wikipedia.org/wiki/Special:ApiSandbox#action=parse&format=json&page=Mass&prop=text%7Csections%7Cdisplaytitle&disablelimitreport=1
+    public JSONObject getArticleJSON(String title) {
+        System.out.println("articleJSONtitle:" + title);
         MultipartBody mb = getBaseBody();
         mb.field("action", "parse")
                 .field("prop", "sections|text|displaytitle")
-                .field("exsectionformat", "raw")
-                .field("indexpageids", 1)
                 .field("disablelimitreport", 1)
                 .field("page", title);
         try {
             JSONObject json = mb.asJson().getBody().getObject();
-            JSONObject parseObject = json.getJSONObject("parse");
-
-            String trueArticleTitle = parseObject.getString("displaytitle");
-
-            JSONObject textObject = parseObject.getJSONObject("text");
-            String articleHTML = textObject.getString("*");
-
-
-            // Preciosos los nombres
-            JSONArray sectionsArray = parseObject.getJSONArray("sections");
-            List<RawSection> noHierarchySections = getRawSections(sectionsArray);
-            Sections sections = new Sections(noHierarchySections);
-
-            return new StructuredArticle(trueArticleTitle, articleHTML, sections);
+            return json;
 
         } catch (UnirestException e) {
             e.printStackTrace();
         }
-
         return null;
+    }
+
+
+    public String getRandomArticleName() {
+        MultipartBody mb = getBaseBody();
+        mb.field("action", "query")
+                .field("generator", "random")
+                .field("grnnamespace", 0) // namespace de artículos
+                .field("grnlimit", 1) // 1 nombre cada vez
+                .field("indexpageids", 1) // para poder recuperar los datos a partir del id de página
+                .field("redirects", 1);
+        try {
+            JSONObject json = mb.asJson().getBody().getObject();
+
+            String pageId = json.getJSONObject("query").getJSONArray("pageids").getString(0);
+            String articleName = json.getJSONObject("query").getJSONObject("pages")
+                    .getJSONObject(pageId).getString("title");
+            return articleName;
+
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public StructuredArticle getStructuredArticle(String title) {
+        JSONObject json = getArticleJSON(title);
+        JSONObject parseObject = json.getJSONObject("parse");
+
+        String trueArticleTitle = parseObject.getString("displaytitle");
+
+        JSONObject textObject = parseObject.getJSONObject("text");
+        String articleHTML = textObject.getString("*");
+
+
+        // Preciosos los nombres
+        JSONArray sectionsArray = parseObject.getJSONArray("sections");
+        List<RawSection> noHierarchySections = getRawSections(sectionsArray);
+        Sections sections = new Sections(noHierarchySections);
+
+        return new StructuredArticle(trueArticleTitle, articleHTML, sections);
     }
 
     public SearchResults getSearchResults(String keywords) {
@@ -106,9 +155,9 @@ public class WikiAPI {
         return new SearchResults(emptyStringList, emptyStringList, emptyStringList);
     }
 
-
-    public ArticleInfo getArticleInfo(String keywords) {
-        String urlEncodedKeywords = urlEncode(keywords);
+    // Link al Sandbox:
+    // https://en.wikipedia.org/wiki/Special:ApiSandbox#action=query&format=json&prop=categories%7Cpageprops&indexpageids=1&redirects=1&clcategories=Category%3ADisambiguation+pages%7CCategory%3AAll+disambiguation+pages%7CCategory%3AAll+article+disambiguation+pages&ppprop=disambiguation
+    public ArticleInfo getArticleInfo(String urlEncodedKeywords) {
         MultipartBody mb = getBaseBody();
         mb.field("action", "query")
                 .field("prop", "categories|pageprops")
@@ -204,33 +253,6 @@ public class WikiAPI {
         return articleSections;
     }
 
-    @Deprecated
-    public ArrayList<Section> getSectionsFromParse(JSONObject json) {
-        ArrayList<Section> articleSections = new ArrayList<Section>();
-
-        JSONObject parse = json.getJSONObject("parse");
-        JSONArray sections = parse.getJSONArray("sections");
-
-        for(int i = 0; i < sections.length(); i++) {
-            JSONObject section = sections.getJSONObject(i);
-            Section articleSection = new Section();
-
-            String name = section.getString("line");
-            articleSection.setName(name);
-
-            String index = section.getString("index");
-            articleSection.setIndex(Integer.parseInt(index));
-
-            String number = section.getString("number");
-            articleSection.setNumber(number);
-
-            String level = section.getString("level");
-            articleSection.setDepth(Integer.parseInt(level) - 1);
-
-            articleSections.add(articleSection);
-        }
-        return articleSections;
-    }
 
     private String urlEncode(String unencodedString) {
         String urlEncodedString = null;

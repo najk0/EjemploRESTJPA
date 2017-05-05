@@ -5,6 +5,10 @@ import org.json.JSONObject;
 
 public class RawSection {
 
+    public static final RawSection HEADER =
+            new RawSection("2", "", "0", "0",
+                    "Introduction", "Introduction");
+
     private final String level;
 
     private final String line;
@@ -19,12 +23,21 @@ public class RawSection {
 
 
     public RawSection(JSONObject jsonSection) {
-        this.anchor = jsonSection.getString("anchor");
-        this.line = jsonSection.getString("line");
-        this.index = jsonSection.getString("index");
-        this.number = jsonSection.getString("number");
-        this.fromtitle = jsonSection.getString("fromtitle");
         this.level = jsonSection.getString("level");
+        this.line = jsonSection.getString("line");
+        this.number = jsonSection.getString("number");
+        this.index = jsonSection.getString("index");
+        this.fromtitle = jsonSection.getString("fromtitle");
+        this.anchor = jsonSection.getString("anchor");
+    }
+
+    private RawSection(String level, String line, String number, String index, String fromtitle, String anchor) {
+        this.level = level;
+        this.line = line;
+        this.number = number;
+        this.index = index;
+        this.fromtitle = fromtitle;
+        this.anchor = anchor;
     }
 
     public String getLevel() {
