@@ -110,13 +110,8 @@ public class Article {
         if (!sb.toString().trim().matches("\\.") && !sb.toString().trim().matches("")) {
             list.add(sb.toString());
         }
-        System.out.println("tamaño lista: " + list.size());
-        for (String s : list) {
-            System.out.println("frase:  |" + s + "|" + "  long :" + s.length());
-        }
 
-
-        return list;
+       return list;
     }
 }
 
