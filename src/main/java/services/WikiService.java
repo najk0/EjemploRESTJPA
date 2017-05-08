@@ -2,8 +2,10 @@ package services;
 
 import api.WikiAPI;
 import data.Article;
+import article.ArticleParser;
 import data.ArticleInfo;
 import data.SearchResults;
+import org.json.JSONObject;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -12,7 +14,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 @Path("api")
 public class WikiService {
@@ -27,8 +28,7 @@ public class WikiService {
     @Produces({"application/json"})
     @Path("{keywords}")
     public Response retrieve(@PathParam("keywords") String encodedKeywords) throws UnsupportedEncodingException {
-        String decodedKeywords = "";
-        decodedKeywords = URLDecoder.decode(encodedKeywords, "UTF-8");
+        String decodedKeywords = URLDecoder.decode(encodedKeywords, "UTF-8");
         String keywords = decodedKeywords.replace(" ", "_");
         Article article;
         String title;
@@ -67,11 +67,16 @@ public class WikiService {
         System.out.println("Las palabras de búsqueda \"" + keywords + "\""
                 + " coinciden con el nombre del artículo");
         //String urlEncodedTitle = URLEncoder.encode(title, "UTF-8");
-        article = api.getArticle(title);
+        JSONObject sourceJSON = api.getArticleJSON(title);
+        ArticleParser ab = new ArticleParser(sourceJSON);
+        String[] articleContents = new String[] {
+                ab.getSectionsHTML(),
+                ab.getContentHTML(),
+        };
 
         return  Response
                 .status(Response.Status.OK)
-                .entity(article)
+                .entity(articleContents)
                 .build();
     }
 

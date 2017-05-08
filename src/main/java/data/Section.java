@@ -1,21 +1,15 @@
 package data;
 
 import javax.xml.bind.annotation.*;
+import java.util.List;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Section {
 
     /* Definición de la sección inicial o cabecera, antes de todas
-    las demás secciones, inicializada por defecto con esta información. */
-    public static final Section HEADER = new Section();
-    static {
-        HEADER.setName("Introduction");
-        HEADER.setDepth(2);
-        HEADER.setNumber("0");
-        HEADER.setIndex(0);
-        HEADER.setAnchor("Introduction");
-    }
+las demás secciones, inicializada por defecto con esta información. */
+    public static final Section HEADER = new Section(RawSection.HEADER);
 
     @XmlAttribute
     private String anchor;
@@ -33,7 +27,7 @@ public class Section {
     private int depth;
 
     @XmlElement
-    private Content content; // El contenido en texto plano TODO quitar
+    private List<String> paragraphs;
 
 
     public Section() {
@@ -53,48 +47,20 @@ public class Section {
         return anchor;
     }
 
-    public void setAnchor(String anchor) {
-        this.anchor = anchor;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
     public String getNumber() {
         return number;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
     public int getDepth() {
         return depth;
-    }
-
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
-
-    public Content getContent() {
-        return content;
-    }
-
-    public void setContent(Content content) {
-        this.content = content;
     }
 
     public String toString() {
@@ -108,18 +74,18 @@ public class Section {
         // Mostramos el número (p.e. 1.3), su nombre...
         sb.append(number).append(" - ").append(name).append(":\n");
         // Y si lo tenemos, parte del contenido
-        if (content != null) {
-            String contentPlaintext = content.getPlaintext();
-            contentPlaintext.replace("\n", ""); // Eliminamos cualquier salto de línea para mejorar la legibilidad
+        for(String p : paragraphs) {
+            p.replace("\n", ""); // Eliminamos cualquier salto de línea para mejorar la legibilidad
             // Indentamos el contenido de cada sección
             for(int i = 0; i < depth + 3; i++) {
                 sb.append("\t");
             }
-            sb.append(contentPlaintext.substring(0, Math.min(contentPlaintext.length(), 80)));
-            if (contentPlaintext.length() > 80) sb.append("...");
+            // Limitamos el contenido que se muestra (sólo el principio)
+            sb.append(p.substring(0, Math.min(p.length(), 80)));
+            if (p.length() > 80) sb.append("...");
             sb.append("\n");
         }
-
         return sb.toString();
     }
+
 }

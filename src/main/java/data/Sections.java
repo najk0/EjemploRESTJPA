@@ -11,7 +11,7 @@ public class Sections implements Iterable<Section> {
 
     @XmlElementWrapper
     @XmlElement(name="searchResult")
-    private Map<String, Section> sectionList;
+    private Map<String, Section> sectionMap;
 
     // Contiene los números (p.e. 1.2) de las secciones en el orden en el que aparecen
     // de manera que podemos recuperar la lista de secciones del mapa en tiempo O(n)
@@ -19,47 +19,37 @@ public class Sections implements Iterable<Section> {
     @XmlElement(name="sectionNumber")
     private List<String> sortedSectionNumbers;
 
-    @XmlAttribute
-    private int size;
-
 
     public Sections() {
         super();
         sortedSectionNumbers = new ArrayList<>();
-        sectionList = new HashMap<>();
-        size = 0;
+        sectionMap = new HashMap<>();
     }
 
-    public Sections(List<RawSection> rawSectionList) {
+    public Sections(List<Section> sections) {
         this();
-        // Añadimos la sección de introducción que no está contenida en la
-        // lista de secciones sacadas de la API. El tamaño por tanto es +1
-        sectionList.put("0", Section.HEADER);
-        sortedSectionNumbers.add("0");
-        size = rawSectionList.size() + 1;
-        // Añadimos el resto de las secciones del artículo
-        for (RawSection rs : rawSectionList) {
-            String sectionNumber = rs.getNumber();
+        for (Section s : sections) {
+            String sectionNumber = s.getNumber();
             sortedSectionNumbers.add(sectionNumber);
-            sectionList.put(sectionNumber, new Section(rs));
+            sectionMap.put(sectionNumber, s);
         }
     }
 
     public Section getByIndex(int index) {
         String number = getNumberByIndex(index);
-        return sectionList.get(number);
+        return sectionMap.get(number);
     }
 
     public Section getByNumber(String number) {
-        return sectionList.get(number);
+        return sectionMap.get(number);
     }
 
     public int getSize() {
-        return size;
+        return this.sectionMap.size();
     }
 
-    public Map<String, Section> getSectionList() {
-        return sectionList;
+    public Map<String, Section> getSectionMap() {
+        return sectionMap;
     }
 
     // Devuelve una lista de todas las secciones hijas dado su número
@@ -109,7 +99,7 @@ public class Sections implements Iterable<Section> {
 
             @Override
             public boolean hasNext() {
-                return index < size;
+                return index < getSize();
             }
 
             @Override

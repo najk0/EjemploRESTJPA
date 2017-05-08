@@ -44,10 +44,7 @@ public class WikiAPI {
         return link.substring(startIndex + baseUrl.length());
     }
 
-    public Article getArticle(String title) {
-        StructuredArticle sa = getStructuredArticle(title);
-        return sa.asArticle();
-    }
+
 
     // Link al Sandbox:
     // https://en.wikipedia.org/wiki/Special:ApiSandbox#action=parse&format=json&page=Mass&prop=text%7Csections%7Cdisplaytitle&disablelimitreport=1
@@ -91,24 +88,6 @@ public class WikiAPI {
         return null;
     }
 
-
-    public StructuredArticle getStructuredArticle(String title) {
-        JSONObject json = getArticleJSON(title);
-        JSONObject parseObject = json.getJSONObject("parse");
-
-        String trueArticleTitle = parseObject.getString("displaytitle");
-
-        JSONObject textObject = parseObject.getJSONObject("text");
-        String articleHTML = textObject.getString("*");
-
-
-        // Preciosos los nombres
-        JSONArray sectionsArray = parseObject.getJSONArray("sections");
-        List<RawSection> noHierarchySections = getRawSections(sectionsArray);
-        Sections sections = new Sections(noHierarchySections);
-
-        return new StructuredArticle(trueArticleTitle, articleHTML, sections);
-    }
 
     public SearchResults getSearchResults(String keywords) {
         MultipartBody mb = getBaseBody();

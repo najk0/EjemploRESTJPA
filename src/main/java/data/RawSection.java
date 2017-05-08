@@ -5,9 +5,11 @@ import org.json.JSONObject;
 
 public class RawSection {
 
+    /* Definición de la sección inicial o cabecera, antes de todas
+    las demás secciones, inicializada por defecto con esta información. */
     public static final RawSection HEADER =
-            new RawSection("2", "", "0", "0",
-                    "Introduction", "Introduction");
+            new RawSection("2", "Introduction", "0", "0",
+                    "Unknown", "Introduction");
 
     private final String level;
 

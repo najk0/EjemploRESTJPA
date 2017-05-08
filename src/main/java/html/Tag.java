@@ -20,7 +20,7 @@ public class Tag {
 
     private List<HTMLAttribute> attrs;
 
-    private String content;
+    private StringBuilder content;
 
 
     public Tag(String tagname, int type) {
@@ -29,16 +29,27 @@ public class Tag {
         }
         this.name = tagname;
         this.type = type;
+        this.content = new StringBuilder();
         attrs = new ArrayList<>();
     }
 
-    public Tag content(String content) {
-        this.content = content;
+    public Tag setContent(String content) {
+        this.content.append(content);
         return this;
     }
 
-    public Tag content(Tag tag) {
-        this.content = tag.toString();
+    public Tag setContent(Tag tag) {
+        this.content.append(tag.toString());
+        return this;
+    }
+
+    public Tag addContent(String moreContent) {
+        this.content.append(moreContent);
+        return this;
+    }
+
+    public Tag addContent(Tag anotherTag) {
+        this.content.append(anotherTag);
         return this;
     }
 

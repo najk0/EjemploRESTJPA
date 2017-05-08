@@ -4,7 +4,7 @@ import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ArticleTest {
+public class TemporaryTests {
 
     private static WikiAPI api;
 

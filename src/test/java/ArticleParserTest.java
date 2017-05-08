@@ -1,12 +1,12 @@
 import api.WikiAPI;
-import data.ArticleBuilder;
+import article.ArticleParser;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-public class ArticleBuilderTest {
+public class ArticleParserTest {
 
     private static WikiAPI api;
 
@@ -19,7 +19,7 @@ public class ArticleBuilderTest {
     @Test
     public void test() {
         JSONObject json = api.getArticleJSON("Society");
-        ArticleBuilder ab = new ArticleBuilder(json);
+        ArticleParser ab = new ArticleParser(json);
         String sectionHTML = ab.getSectionHTML(22);
         System.out.println(sectionHTML);
         assertEquals("", "");
@@ -29,13 +29,27 @@ public class ArticleBuilderTest {
     @Test
     public void getAllSectionHTMLEqualsFullHTML() {
         JSONObject json = api.getArticleJSON("Society");
-        ArticleBuilder ab = new ArticleBuilder(json);
+        ArticleParser ab = new ArticleParser(json);
 
         StringBuilder allSectionsHTML = new StringBuilder();
         for(int i = 0; i < ab.getSize(); i++) {
             allSectionsHTML.append(ab.getSectionHTML(i));
         }
         assertEquals(ab.getHTML(), allSectionsHTML.toString());
+    }
+
+    @Test
+    public void getSectionsHTML() {
+        JSONObject json = api.getArticleJSON("Society");
+        ArticleParser ab = new ArticleParser(json);
+        System.out.println(ab.getSectionsHTML());
+    }
+
+    @Test
+    public void getContentHTML() {
+        JSONObject json = api.getArticleJSON("Society");
+        ArticleParser ab = new ArticleParser(json);
+        System.out.println(ab.getContentHTML());
     }
 
 }

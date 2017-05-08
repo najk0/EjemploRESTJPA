@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+// TODO borrar. es posible devolver como respuesta una lista de SearchResult, por lo que esta clase no es necesaria.
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SearchResults {

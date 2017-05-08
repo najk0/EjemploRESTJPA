@@ -1,5 +1,7 @@
-package data;
+package article;
 
+import data.RawSection;
+import html.Tag;
 import net.htmlparser.jericho.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -7,7 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArticleBuilder {
+public class ArticleParser {
 
     private final String title;
 
@@ -18,7 +20,7 @@ public class ArticleBuilder {
     private final List<RawSection> sections;
 
 
-    public ArticleBuilder(JSONObject json) {
+    public ArticleParser(JSONObject json) {
         this.title = json.getJSONObject("parse").getString("displaytitle");
         this.html = json.getJSONObject("parse").getJSONObject("text")
                 .getString("*");
@@ -104,6 +106,55 @@ public class ArticleBuilder {
             }
         }
         return null;
+    }
+
+    public String getSectionsHTML() {
+        Tag ul = new Tag("ul", Tag.TYPE_ENDTAG);
+        for(RawSection rs : sections) {
+            Tag li = new Tag("li", Tag.TYPE_ENDTAG);
+            String sectionTitle = rs.getLine();
+            li.setContent(new Tag("a", Tag.TYPE_ENDTAG)
+                    .attr("href", "#" + rs.getAnchor())
+                    .setContent(sectionTitle));
+            ul.addContent(li);
+        }
+        return ul.toString();
+    }
+
+
+    public String getContentHTML() {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < sections.size(); i++) {
+            // Obtenemos la sección y el contenido en HTML correspondiente
+            RawSection rs = sections.get(i);
+
+            // Agregamos el encabezado de la sección
+            Tag sectionHeader = new Tag("h2", Tag.TYPE_ENDTAG)
+                    .attr("id", rs.getAnchor());
+            sectionHeader.addContent(rs.getNumber()).addContent(" - ").addContent(rs.getLine());
+            sb.append(sectionHeader);
+
+            // Troceamos el contenido en HTML de la sección para obtener sólo los párrafos
+            List<String> paragraphs = getSectionParagraphs(i);
+            for(String paragraph : paragraphs) {
+                // En este caso el HTML del párrafo ya contiene los tag <p> por lo que no hay que añadirlos
+                sb.append(paragraph);
+            }
+        }
+        return sb.toString();
+    }
+
+
+    public List<String> getSectionParagraphs(int index) {
+        List<String> paragraphs = new ArrayList<>();
+        String html = getSectionHTML(index);
+        Source src = new Source(html);
+
+        List<Element> pTags = src.getAllElements(HTMLElementName.P);
+        for(Element p : pTags) {
+            paragraphs.add(p.toString());
+        }
+        return paragraphs;
     }
 
 
