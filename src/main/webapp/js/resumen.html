@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>qWiki</title>
+		<link rel="stylesheet" type="text/css" href="./style.css">
+		<script>
+			function crearRuta() {
+				var page = document.getElementById("search").value;
+				window.location = "./rest/wiki/" + page;
+			}
+		</script>
+	</head>
+	<body>
+		<div id="header">
+			<span id="logo">qWiki</span>
+			<input class="form-control" type="text" placeholder="Search" id="search">
+			<input class="form-control" type="submit" onclick="crearRuta()" id="submit" value="Summarize">
+		</div>
+
+		<div id="content">
+
+		</div>
+	</body>
+</html>
