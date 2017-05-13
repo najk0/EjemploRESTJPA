@@ -47,7 +47,6 @@ public class Article {
     }
 
 
-
     public List<String> spliter(String text) {
         ArrayList<String> list = new ArrayList<String>();
         StringBuilder sb = new StringBuilder();

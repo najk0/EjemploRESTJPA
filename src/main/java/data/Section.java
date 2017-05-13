@@ -8,8 +8,10 @@ import java.util.List;
 public class Section {
 
     /* Definición de la sección inicial o cabecera, antes de todas
-las demás secciones, inicializada por defecto con esta información. */
+    las demás secciones, inicializada por defecto con esta información. */
     public static final Section HEADER = new Section(RawSection.HEADER);
+
+    private RawSection rawSection;
 
     @XmlAttribute
     private String anchor;
@@ -26,8 +28,8 @@ las demás secciones, inicializada por defecto con esta información. */
     @XmlAttribute
     private int depth;
 
-    @XmlElement
-    private List<String> paragraphs;
+    @XmlAttribute
+    private String content;
 
 
     public Section() {
@@ -36,11 +38,21 @@ las demás secciones, inicializada por defecto con esta información. */
 
     public Section(RawSection rs) {
         this();
+        this.rawSection = rs;
         this.anchor = rs.getAnchor();
         this.index = Integer.parseInt(rs.getIndex());
         this.number = rs.getNumber();
         this.depth = Integer.parseInt(rs.getLevel());
         this.name = rs.getLine();
+    }
+
+    public Section(RawSection rs, String content) {
+        this(rs);
+        setContent(content);
+    }
+
+    public RawSection getRawSection() {
+        return rawSection;
     }
 
     public String getAnchor() {
@@ -63,28 +75,34 @@ las demás secciones, inicializada por defecto con esta información. */
         return depth;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        // Imprimimos el índice que determina el orden de las secciones
+        // El índice que determina el orden de las secciones lo más a la izquierda posible
         sb.append("(").append(index).append(") ");
         // Indentamos las subsecciones
         for(int i = 0; i < depth; i++) {
             sb.append("\t");
         }
-        // Mostramos el número (p.e. 1.3), su nombre...
+        // Mostramos el número (p.e. 1.3) y su nombre
         sb.append(number).append(" - ").append(name).append(":\n");
-        // Y si lo tenemos, parte del contenido
-        for(String p : paragraphs) {
-            p.replace("\n", ""); // Eliminamos cualquier salto de línea para mejorar la legibilidad
-            // Indentamos el contenido de cada sección
-            for(int i = 0; i < depth + 3; i++) {
-                sb.append("\t");
-            }
-            // Limitamos el contenido que se muestra (sólo el principio)
-            sb.append(p.substring(0, Math.min(p.length(), 80)));
-            if (p.length() > 80) sb.append("...");
-            sb.append("\n");
+        // Y el contenido en líneas de X caracteres
+        int charsPerLine = 80;
+        int startIndex = 0;
+        int endIndex;
+        while (startIndex < content.length()) {
+            endIndex = Math.min(startIndex + charsPerLine, content.length());
+            sb.append("\t").append(content.substring(startIndex, endIndex)).append("\n");
+            startIndex += charsPerLine;
         }
+        sb.append("\n");
         return sb.toString();
     }
 

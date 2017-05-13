@@ -20,7 +20,7 @@ public class ArticleInfo {
 
 
     // Constructor vacío necesario para que funcionen las anotaciones XML
-    // también usado para indicar que el artículo no existe
+    // también usado para indicar que el artículo no existe (al no inicializar ninguna variable)
     public ArticleInfo() {
         super();
     }

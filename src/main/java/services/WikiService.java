@@ -1,8 +1,10 @@
 package services;
 
 import api.WikiAPI;
-import data.Article;
 import article.ArticleParser;
+import article.ArticleSummarizer;
+import data.Article;
+import article.ArticleSplitter;
 import data.ArticleInfo;
 import data.SearchResults;
 import org.json.JSONObject;
@@ -30,8 +32,8 @@ public class WikiService {
     public Response retrieve(@PathParam("keywords") String encodedKeywords) throws UnsupportedEncodingException {
         String decodedKeywords = URLDecoder.decode(encodedKeywords, "UTF-8");
         String keywords = decodedKeywords.replace(" ", "_");
-        Article article;
         String title;
+
         // Si se provee un link directo al artículo, extraemos el título
         if (api.isValidLink(keywords)) {
             title = api.getTitleFromLink(keywords);
@@ -66,17 +68,22 @@ public class WikiService {
 
         System.out.println("Las palabras de búsqueda \"" + keywords + "\""
                 + " coinciden con el nombre del artículo");
-        //String urlEncodedTitle = URLEncoder.encode(title, "UTF-8");
+
+        // Obtenemos el título, secciones y contenido del artículo de la API de Wikipedia
         JSONObject sourceJSON = api.getArticleJSON(title);
-        ArticleParser ab = new ArticleParser(sourceJSON);
-        String[] articleContents = new String[] {
-                ab.getSectionsHTML(),
-                ab.getContentHTML(),
-        };
+        // A partir de esta información troceamos el contenido en secciones.
+        ArticleSplitter ab = new ArticleSplitter(sourceJSON);
+        Article splitArticle = ab.getSplitArticle();
+        // El contenido todavía tiene etiquetas HTML no deseadas (b, i, etc...) - las eliminamos
+        ArticleParser parser = new ArticleParser(splitArticle);
+        Article parsedArticle = parser.getParsedArticle();
+        // TODO resumir el artículo
+        //ArticleSummarizer summarizer = new ArticleSummarizer(parsedArticle);
+        //Article summaryArticle = summarizer.getSummarizedArticle();
 
         return  Response
                 .status(Response.Status.OK)
-                .entity(articleContents)
+                .entity(parsedArticle)
                 .build();
     }
 

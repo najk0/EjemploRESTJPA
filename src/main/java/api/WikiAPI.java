@@ -233,14 +233,10 @@ public class WikiAPI {
     }
 
 
-    private String urlEncode(String unencodedString) {
-        String urlEncodedString = null;
-        try {
-            urlEncodedString = URLEncoder.encode(unencodedString, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            //No pasa nunca porque la codificación es siempre la misma y es válida
-        }
-        return urlEncodedString;
+    public static String encodeTitle(String unencodedTitle) {
+        String encodedTitle = unencodedTitle;
+        encodedTitle = encodedTitle.replace(" ", "+");
+        return encodedTitle;
     }
 
     public void setLang(String lang) {

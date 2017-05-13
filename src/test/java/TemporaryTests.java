@@ -1,5 +1,8 @@
 import api.WikiAPI;
+import article.ArticleParser;
+import article.ArticleSplitter;
 import data.Article;
+import data.Section;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,9 +17,22 @@ public class TemporaryTests {
     }
 
     @Test
-    public void test() {
-        //String title = "-1"; // Wicket gate
-        //JSONObject json = api.getArticleJSON(title);
-        //System.out.println(json.toString(2));
+    public void splitterTest() throws Exception {
+        String title = "Wicket gate";
+        JSONObject json = api.getArticleJSON(title);
+        ArticleSplitter splitter = new ArticleSplitter(json);
+        Article splitArticle = splitter.getSplitArticle();
+        System.out.println(splitArticle);
+    }
+
+    @Test
+    public void parserTest() throws Exception {
+        String title = "Wicket gate";
+        JSONObject json = api.getArticleJSON(title);
+        ArticleSplitter splitter = new ArticleSplitter(json);
+        Article splitArticle = splitter.getSplitArticle();
+        ArticleParser parser = new ArticleParser(splitArticle);
+        Article parsedArticle = parser.getParsedArticle();
+        System.out.println(parsedArticle);
     }
 }

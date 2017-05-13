@@ -1,7 +1,8 @@
-package data;
+package html;
 
 import com.google.common.collect.Sets;
 import net.htmlparser.jericho.*;
+import net.htmlparser.jericho.Tag;
 
 import java.util.List;
 import java.util.Set;
@@ -11,22 +12,25 @@ import static net.htmlparser.jericho.CharacterReference.decode;
 
 public class HtmlSanitizer {
 
-    private HtmlSanitizer() {
-    }
-
-    private static final Set<String> VALID_ELEMENTS = Sets.newHashSet(HTMLElementName.A);
-
+    private static final Set<String> VALID_ELEMENTS = Sets.newHashSet(HTMLElementName.A, HTMLElementName.P);
 
     private static final Set<String> VALID_ATTRIBUTES = Sets.newHashSet("href", "title");
 
     private static final Object VALID_MARKER = new Object();
 
-    public static String sanitize(Source source) {
+
+    public HtmlSanitizer() {
+        super();
+    }
+
+
+    public String sanitize(String html) {
+        Source source = new Source(html);
         source.fullSequentialParse();
         OutputDocument doc = new OutputDocument(source);
-        List<Tag> tags = source.getAllTags();
+        List<net.htmlparser.jericho.Tag> tags = source.getAllTags();
         int pos = 0;
-        for (Tag tag : tags) {
+        for (net.htmlparser.jericho.Tag tag : tags) {
             if (processTag(tag, doc))
                 tag.setUserData(VALID_MARKER);
             else
@@ -38,7 +42,7 @@ public class HtmlSanitizer {
         return doc.toString();
     }
 
-    private static boolean processTag(Tag tag, OutputDocument doc) {
+    private boolean processTag(net.htmlparser.jericho.Tag tag, OutputDocument doc) {
         String elementName = tag.getName();
         if (!VALID_ELEMENTS.contains(elementName))
             return false;
@@ -69,7 +73,7 @@ public class HtmlSanitizer {
         return true;
     }
 
-    private static boolean isValidLITag(Tag tag) {
+    private boolean isValidLITag(Tag tag) {
         Element parentElement = tag.getElement().getParentElement();
         if (parentElement == null
                 || parentElement.getStartTag().getUserData() != VALID_MARKER)
@@ -78,8 +82,8 @@ public class HtmlSanitizer {
                 || parentElement.getName() == HTMLElementName.OL;
     }
 
-    private static void reencodeTextSegment(Source source, OutputDocument doc,
-                                            int begin, int end) {
+    private void reencodeTextSegment(Source source, OutputDocument doc,
+                                     int begin, int end) {
         if (begin >= end)
             return;
         Segment textSegment = new Segment(source, begin, end);
@@ -87,7 +91,7 @@ public class HtmlSanitizer {
         doc.replace(textSegment, encodedText);
     }
 
-    private static CharSequence getStartTagHTML(StartTag startTag) {
+    private CharSequence getStartTagHTML(StartTag startTag) {
         StringBuilder sb = new StringBuilder();
         sb.append('<').append(startTag.getName());
         for (Attribute attribute : startTag.getAttributes()) {
@@ -108,7 +112,7 @@ public class HtmlSanitizer {
         return sb;
     }
 
-    private static String getEndTagHTML(String tagName) {
+    private String getEndTagHTML(String tagName) {
         return "</" + tagName + '>';
     }
 

@@ -1,4 +1,4 @@
-package data;
+package html;
 
 public class LinkToTextComparator {
 
