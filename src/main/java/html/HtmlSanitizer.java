@@ -44,6 +44,9 @@ public class HtmlSanitizer {
 
     private boolean processTag(net.htmlparser.jericho.Tag tag, OutputDocument doc) {
         String elementName = tag.getName();
+        if(elementName == HTMLElementName.A && tag.getElement().getAttributeValue("href").matches("#cite_note-\\d")) {
+            return false;
+        }
         if (!VALID_ELEMENTS.contains(elementName))
             return false;
         if (tag.getTagType() == StartTagType.NORMAL) {
