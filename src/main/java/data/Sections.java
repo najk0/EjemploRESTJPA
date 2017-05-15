@@ -16,7 +16,7 @@ public class Sections implements Iterable<Section> {
     // Contiene los números (p.e. 1.2) de las secciones en el orden en el que aparecen
     // de manera que podemos recuperar la lista de secciones del mapa en tiempo O(n)
     @XmlElementWrapper
-    @XmlElement(name="sectionNumber")
+    @XmlElement(name="sortedSectionNumbers")
     private List<String> sortedSectionNumbers;
 
 
@@ -50,6 +50,14 @@ public class Sections implements Iterable<Section> {
 
     public Map<String, Section> getSectionMap() {
         return sectionMap;
+    }
+
+    public List<String> getSortedSectionNumbers() {
+        return sortedSectionNumbers;
+    }
+
+    public void setSortedSectionNumbers(List<String> sortedSectionNumbers) {
+        this.sortedSectionNumbers = sortedSectionNumbers;
     }
 
     // Devuelve una lista de todas las secciones hijas dado su número

@@ -3,8 +3,6 @@ import article.ArticleParser;
 import article.ArticleSplitter;
 import article.ArticleSummarizer;
 import data.Article;
-import data.Section;
-import data.Sections;
 import net.sf.classifier4J.summariser.SimpleSummariser;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
@@ -26,7 +24,7 @@ public class ArticleSummarizerTest {
     public static void init() {
         api = new WikiAPI();
         classifier4JSummariser = new SimpleSummariser();
-        JSONObject json = api.getArticleJSON("Society");
+        JSONObject json = api.getArticleJSON("Queen (band)");
         ArticleSplitter splitter = new ArticleSplitter(json);
         Article splitArticle = splitter.getSplitArticle();
         ArticleParser parser = new ArticleParser(splitArticle);
@@ -34,55 +32,64 @@ public class ArticleSummarizerTest {
         summarizer = new ArticleSummarizer(parsedArticle);
     }
 
-    @Test
-    public void splitInLines() {
-        Sections sections = summarizer.getArticle().getSections();
-        for(Section section : sections) {
-            String html = section.getContent();
-            List<String> lines = summarizer.splitInLines(html);
-            // List<String> lines = new Article(null, null).spliter(html); // Método de Iulian, no funciona correctamente
-            System.out.println("Section " + section.getNumber() + " has " + lines.size() + " lines:");
-            int i = 1;
-            for(String line : lines) {
-                System.out.println("(" + i++ + ")\t" + line);
-            }
-            System.out.println("------------------------------\n");
-        }
-    }
 
     @Test
-    public void getAllLines() {
-        List<String> allLines = summarizer.getAllLines();
-        int i = 1;
-        for(String line: allLines) {
-            System.out.println("(" + i++ + "/" + allLines.size() + ") " + line);
-        }
-    }
-
-    @Test
-    public void getAllLinesPlaintext() {
+    public void compareLineLists() {
+        // Artículo original
         // Obtenemos todas las líneas de los párrafos <p> en texto plano
-        List<String> allLines = summarizer.getAllLinesPlaintext();
-        int i = 1;
-        for(String line: allLines) {
-            System.out.println("(" + i++ + "/" + allLines.size() + ") " + line);
-        }
         // Unimos todas las líneas para poder resumir el texto.
-        String articleContent = summarizer.joinLines(allLines);
-        // Classifier4J agrega un punto al final del documento si éste no termina con uno.
-        // Si el texto original no contiene un punto al final, tras el resumen se
-        // considerará que no coinciden, sólo porque no terminan ambos en un punto.
-        if (articleContent.endsWith(".") == false) {
-            articleContent += ".";
-        }
+        String originalArticleContent = summarizer.stripHtml(summarizer.getAllContent());
+        List<String> originalArticleLines = summarizer.splitInLines(originalArticleContent);
+
+        System.out.println("ORIGINAL ARTICLE CONTENT:\n" + originalArticleContent);
+
+        // Artículo resumido
         // Resumimos el artículo indicando que queremos obtener el mismo número de líneas
         // que el artículo original, esencialmente no resumiendo nada. Hacemos esto para
         // comprobar que el criterio que tenemos nosotros para separar las frases es el
         // mismo que tiene Classifier4J, ya que de lo contrario no podríamos relacionar
         // las líneas que han quedado resumidas con las originales, porque una línea podría
         // haber sido dividida de dos formas distintas.
-        String summary = classifier4JSummariser.summarise(articleContent, allLines.size());
-        assertEquals(articleContent, summary);
+        String summarizedArticleContent = summarizer.summarize(originalArticleContent, originalArticleLines.size());
+        List<String> summarizedArticleLines = summarizer.splitInLines(summarizedArticleContent);
+        //List<String> summarizedArticleLines = summarizer.splitInLines(originalArticleContent);
+
+        /*
+        System.out.println("Original text:\n");
+        System.out.println(originalArticleContent);
+        System.out.println("\n\n*******************************************\n\n");
+        System.out.println("Summarized text:\n");
+        System.out.println(summarizedArticleContent);
+
+        System.out.println("Original lines: " + originalArticleLines.size());
+        System.out.println("Summarized lines: " + summarizedArticleLines.size());
+        */
+        assertAllFromList2AreInList1(originalArticleLines, summarizedArticleLines);
+    }
+
+    private boolean assertAllFromList2AreInList1(List<String> list1, List<String> list2) {
+        int list2Index = 0;
+        int matches = 0;
+        int i = 0;
+        for(; i < list1.size(); i++) {
+            System.out.println("(" + i + "/" + list1.size() + ")"
+                    + "\nO: " + list1.get(i)
+                    + "\nS: " + list2.get(list2Index)
+                    + "\n----------");
+            // Cada vez que encontramos una coincidencia...
+            if (list1.get(i).equals(list2.get(list2Index))) {
+                matches++;
+                list2Index++;
+            }
+            // Si ya las hemos encontrado todas, paramos.
+            if (list2Index == list2.size()) {
+                break;
+            }
+        }
+        // Comprobamos si todas las líneas de la segunda lista existen en la primera lista
+        assertEquals(list2.size(), matches);
+        System.out.println("Las " + list2.size() + " líneas de la segunda lista están contenidas en las " + list1.size() + " líneas de la primera lista. Todas ellas están en las primeras " + i + " líneas de la primera lista.");
+        return list2.size() == matches;
     }
 
 }

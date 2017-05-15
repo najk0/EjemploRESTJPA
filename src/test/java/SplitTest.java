@@ -55,7 +55,7 @@ public class SplitTest {
     Article article = new Article();
 
 
-    @Test
+
     public void test() throws Exception{
 
         String text = FileUtils.readFileToString(new File("C:\\articulo.txt"), "UTF-8");

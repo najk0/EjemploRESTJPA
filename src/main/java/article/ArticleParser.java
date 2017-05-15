@@ -10,6 +10,8 @@ import net.htmlparser.jericho.Source;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ArticleParser {
 
@@ -32,11 +34,23 @@ public class ArticleParser {
         return sb.toString();
     }
 
-    public String stripAllButLinks(String html) {
-        return new HtmlSanitizer().sanitize(html);
+    private String replaceOccurencesWith(String html, String target, String replacement) {
+        Pattern pattern = Pattern.compile(target);
+        Matcher matcher = pattern.matcher(html);
+        String modifiedHtml = html;
+        while(matcher.find()) {
+            modifiedHtml = modifiedHtml.replace(matcher.group(), replacement); // Wow!
+        }
+        return modifiedHtml;
     }
 
-    //TODO quitar tags a cuyo ("href").contains("#cite_note")
+    public String stripAllButLinks(String html) {
+        String noLinksHtml = new HtmlSanitizer().sanitize(html);
+        String noReferencesHtml = replaceOccurencesWith(noLinksHtml, "\\[(\\d*?)\\]", "");
+        String properlySpacedHtml = replaceOccurencesWith(noReferencesHtml, "(<\\/p>)", "</p> ");
+        return properlySpacedHtml;
+    }
+
     public String stripTagsOfSection(int index) {
         return stripTagsOfSection(article.getSections().getByIndex(index));
     }

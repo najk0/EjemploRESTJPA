@@ -1,5 +1,6 @@
 package data;
 
+import javax.jws.WebMethod;
 import javax.xml.bind.annotation.*;
 import java.util.List;
 
@@ -11,6 +12,7 @@ public class Section {
     las demás secciones, inicializada por defecto con esta información. */
     public static final Section HEADER = new Section(RawSection.HEADER);
 
+    @XmlTransient
     private RawSection rawSection;
 
     @XmlAttribute
@@ -51,6 +53,7 @@ public class Section {
         setContent(content);
     }
 
+    @WebMethod(exclude = true)
     public RawSection getRawSection() {
         return rawSection;
     }

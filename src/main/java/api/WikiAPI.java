@@ -49,7 +49,6 @@ public class WikiAPI {
     // Link al Sandbox:
     // https://en.wikipedia.org/wiki/Special:ApiSandbox#action=parse&format=json&page=Mass&prop=text%7Csections%7Cdisplaytitle&disablelimitreport=1
     public JSONObject getArticleJSON(String title) {
-        System.out.println("articleJSONtitle:" + title);
         MultipartBody mb = getBaseBody();
         mb.field("action", "parse")
                 .field("prop", "sections|text|displaytitle")

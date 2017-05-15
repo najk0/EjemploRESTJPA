@@ -1,6 +1,7 @@
 import api.WikiAPI;
 import article.ArticleParser;
 import article.ArticleSplitter;
+import article.ArticleSummarizer;
 import data.Article;
 import data.Section;
 import org.json.JSONObject;
@@ -27,7 +28,7 @@ public class TemporaryTests {
 
     @Test
     public void parserTest() throws Exception {
-        String title = "Wicket gate";
+        String title = "Society";
         JSONObject json = api.getArticleJSON(title);
         ArticleSplitter splitter = new ArticleSplitter(json);
         Article splitArticle = splitter.getSplitArticle();
@@ -35,4 +36,22 @@ public class TemporaryTests {
         Article parsedArticle = parser.getParsedArticle();
         System.out.println(parsedArticle);
     }
+
+
+    @Test
+    public void summarizerTest() throws Exception {
+        String title = "Society";
+        JSONObject json = api.getArticleJSON(title);
+        ArticleSplitter splitter = new ArticleSplitter(json);
+        Article splitArticle = splitter.getSplitArticle();
+
+        ArticleParser parser = new ArticleParser(splitArticle);
+        Article parsedArticle = parser.getParsedArticle();
+
+        ArticleSummarizer summarizer = new ArticleSummarizer(parsedArticle);
+        Article summarizedArticle = summarizer.getSummarizedArticle(1f);
+
+        System.out.println(summarizedArticle);
+    }
+
 }

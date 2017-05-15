@@ -1,5 +1,6 @@
 import api.WikiAPI;
 import article.ArticleSplitter;
+import data.Article;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,10 +20,9 @@ public class ArticleSplitterTest {
     @Test
     public void test() {
         JSONObject json = api.getArticleJSON("Society");
-        ArticleSplitter ab = new ArticleSplitter(json);
-        String sectionHTML = ab.getSectionHTML(22);
-        System.out.println(sectionHTML);
-        assertEquals("", "");
+        ArticleSplitter splitter = new ArticleSplitter(json);
+        Article splitArticle = splitter.getSplitArticle();
+        System.out.println(splitArticle);
     }
 
 
