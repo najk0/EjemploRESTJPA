@@ -1,5 +1,7 @@
 package data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.xml.bind.annotation.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -10,7 +12,7 @@ import java.util.regex.Pattern;
 public class Sections implements Iterable<Section> {
 
     @XmlElementWrapper
-    @XmlElement(name="searchResult")
+    @XmlElement(name="sectionMap")
     private Map<String, Section> sectionMap;
 
     // Contiene los números (p.e. 1.2) de las secciones en el orden en el que aparecen
@@ -19,11 +21,15 @@ public class Sections implements Iterable<Section> {
     @XmlElement(name="sortedSectionNumbers")
     private List<String> sortedSectionNumbers;
 
+    @XmlAttribute
+    private int size;
+
 
     public Sections() {
         super();
         sortedSectionNumbers = new ArrayList<>();
         sectionMap = new HashMap<>();
+        size = 0;
     }
 
     public Sections(List<Section> sections) {
@@ -33,6 +39,7 @@ public class Sections implements Iterable<Section> {
             sortedSectionNumbers.add(sectionNumber);
             sectionMap.put(sectionNumber, s);
         }
+        size = sectionMap.size();
     }
 
     public Section getByIndex(int index) {
@@ -44,16 +51,16 @@ public class Sections implements Iterable<Section> {
         return sectionMap.get(number);
     }
 
-    public int getSize() {
-        return this.sectionMap.size();
-    }
-
     public Map<String, Section> getSectionMap() {
         return sectionMap;
     }
 
     public List<String> getSortedSectionNumbers() {
         return sortedSectionNumbers;
+    }
+
+    public int getSize() {
+        return this.sectionMap.size();
     }
 
     public void setSortedSectionNumbers(List<String> sortedSectionNumbers) {
@@ -119,6 +126,7 @@ public class Sections implements Iterable<Section> {
         return it;
     }
 
+    @Deprecated
     private int[] getNumberAsArray(String number) {
         String[] allNumber = number.split("\\.");
         int[] numberArray;

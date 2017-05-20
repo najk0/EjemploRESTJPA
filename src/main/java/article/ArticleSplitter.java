@@ -1,9 +1,6 @@
 package article;
 
-import data.Article;
-import data.RawSection;
-import data.Section;
-import data.Sections;
+import data.*;
 import html.Tag;
 import net.htmlparser.jericho.*;
 import org.json.JSONArray;
@@ -164,7 +161,7 @@ public class ArticleSplitter {
         for(int i = 0; i < getSize(); i++) {
             Section section = new Section(rawSections.get(i));
             String sectionHTML = getSectionHTML(i);
-            section.setContent(sectionHTML);
+            section.setDisplayedContent(sectionHTML);
             sectionList.add(section);
         }
         return new Sections(sectionList);

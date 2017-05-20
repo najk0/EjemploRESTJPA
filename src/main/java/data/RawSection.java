@@ -10,15 +10,19 @@ public class RawSection {
     public static final RawSection HEADER =
             new RawSection("2", "Introduction", "0", "0", "Introduction");
 
-    private final String level;
+    private String level;
 
-    private final String line;
+    private String line;
 
-    private final String number;
+    private String number;
 
-    private final String index;
+    private String index;
 
-    private final String anchor;
+    private String anchor;
+
+    public RawSection() {
+        super();
+    }
 
 
     public RawSection(JSONObject jsonSection) {

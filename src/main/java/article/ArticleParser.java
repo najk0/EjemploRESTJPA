@@ -1,6 +1,7 @@
 package article;
 
 import data.Article;
+import data.Content;
 import data.Section;
 import data.Sections;
 import html.HtmlSanitizer;
@@ -47,7 +48,7 @@ public class ArticleParser {
     public String stripAllButLinks(String html) {
         String noLinksHtml = new HtmlSanitizer().sanitize(html);
         String noReferencesHtml = replaceOccurencesWith(noLinksHtml, "\\[(\\d*?)\\]", "");
-        String properlySpacedHtml = replaceOccurencesWith(noReferencesHtml, "(<\\/p>)", "</p> ");
+        String properlySpacedHtml = replaceOccurencesWith(noReferencesHtml, "(<\\/p>)", " </p>"); // TODO remove
         return properlySpacedHtml;
     }
 
@@ -56,14 +57,17 @@ public class ArticleParser {
     }
 
     public String stripTagsOfSection(Section section) {
-        String onlyPTags = keepOnlyParagraphTags(section.getContent());
+        String onlyPTags = keepOnlyParagraphTags(section.getDisplayedContent());
         return stripAllButLinks(onlyPTags);
     }
 
     public Article getParsedArticle() {
         List<Section> parsedSectionList = new ArrayList<>();
         for(Section section : article.getSections()) {
-            Section parsedSection = new Section(section.getRawSection(), stripTagsOfSection(section));
+            Section parsedSection = new Section(section.getRawSection());
+            String strippedContent = stripTagsOfSection(section);
+            parsedSection.setContent(new Content(strippedContent));
+            parsedSection.setDisplayedContent(strippedContent);
             parsedSectionList.add(parsedSection);
         }
         Sections parsedSections = new Sections(parsedSectionList);

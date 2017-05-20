@@ -3,7 +3,7 @@ import article.ArticleParser;
 import article.ArticleSplitter;
 import article.ArticleSummarizer;
 import data.Article;
-import data.Section;
+import net.sf.classifier4J.Utilities;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class TemporaryTests {
         Article parsedArticle = parser.getParsedArticle();
 
         ArticleSummarizer summarizer = new ArticleSummarizer(parsedArticle);
-        Article summarizedArticle = summarizer.getSummarizedArticle(1f);
+        Article summarizedArticle = summarizer.getSummarizedArticle(0.2f);
 
         System.out.println(summarizedArticle);
     }

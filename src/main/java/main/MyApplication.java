@@ -7,7 +7,7 @@ import providers.ObjectMapperProvider;
 
 import javax.ws.rs.ApplicationPath;
 
-@ApplicationPath("/rest")
+@ApplicationPath("/")
 public class MyApplication extends ResourceConfig {
     public MyApplication() {
         packages("services");

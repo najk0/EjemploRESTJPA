@@ -5,7 +5,6 @@ import javax.xml.bind.annotation.*;
 import java.util.List;
 
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Section {
 
     /* Definición de la sección inicial o cabecera, antes de todas
@@ -30,8 +29,11 @@ public class Section {
     @XmlAttribute
     private int depth;
 
+    @XmlTransient
+    private Content content;
+
     @XmlAttribute
-    private String content;
+    private String displayedContent;
 
 
     public Section() {
@@ -48,12 +50,7 @@ public class Section {
         this.name = rs.getLine();
     }
 
-    public Section(RawSection rs, String content) {
-        this(rs);
-        setContent(content);
-    }
-
-    @WebMethod(exclude = true)
+    @WebMethod(exclude = true) // TODO no funciona...
     public RawSection getRawSection() {
         return rawSection;
     }
@@ -78,12 +75,20 @@ public class Section {
         return depth;
     }
 
-    public String getContent() {
+    public Content getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(Content content) {
         this.content = content;
+    }
+
+    public String getDisplayedContent() {
+        return displayedContent;
+    }
+
+    public void setDisplayedContent(String displayedContent) {
+        this.displayedContent = displayedContent;
     }
 
     public String toString() {
@@ -100,9 +105,9 @@ public class Section {
         int charsPerLine = 80;
         int startIndex = 0;
         int endIndex;
-        while (startIndex < content.length()) {
-            endIndex = Math.min(startIndex + charsPerLine, content.length());
-            sb.append("\t").append(content.substring(startIndex, endIndex)).append("\n");
+        while (startIndex < displayedContent.length()) {
+            endIndex = Math.min(startIndex + charsPerLine, displayedContent.length());
+            sb.append("\t").append(displayedContent.substring(startIndex, endIndex)).append("\n");
             startIndex += charsPerLine;
         }
         sb.append("\n");
