@@ -4,3 +4,4 @@ derby.log
 target/
 agenda/
 src/main/webapp/node_modules/
+cache/
