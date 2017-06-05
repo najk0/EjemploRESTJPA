@@ -21,8 +21,12 @@ public class Cache {
 
     private static Cache instance;
 
+    private static final int SAVE_COUNT = 10;
+    private int nextSaveCount;
+
 
     private Cache() {
+        nextSaveCount = SAVE_COUNT;
     }
 
     public static Cache getInstance() {
@@ -83,6 +87,14 @@ public class Cache {
 
             // Guardamos el nombre del artículo en la lista de sugerencias
             listing.put(article.getTitle().toLowerCase(), 1);
+
+            // Cada X artículos accedidos guardamos la lista de artículos accedidos
+            // Idealmente esto se haría sólo al cerrar la aplicación...
+            nextSaveCount--;
+            if (nextSaveCount <= 0) {
+                save();
+                nextSaveCount = SAVE_COUNT;
+            }
 
         } catch (JsonGenerationException e) {
             System.err.println("Error generando el objeto JSON del artículo " + articleTitle

@@ -90,7 +90,7 @@ public class WikiService {
             Article parsedArticle = parser.getParsedArticle();
             // Resumimos el artículo a un % de su total
             ArticleSummarizer summarizer = new ArticleSummarizer(parsedArticle);
-            article = summarizer.getSummarizedArticle(0.2f);
+            article = summarizer.getSummarizedArticle(0.1f);
             // Lo almacenamos en caché
             cache.store(article);
         }
