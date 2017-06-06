@@ -161,7 +161,21 @@ public class ArticleSummarizer {
         int originalLineCount = allContentLines.size();
 
         List<String> summarizedLines = new ArrayList<>();
-        int linesPerChunk = Math.max(originalLineCount, originalLineCount / 10);
+        // Bloques de al menos 30 líneas. Si tiene más de 30 líneas (p.e. 600 líneas) se divide en
+        // bloques de 600/10 -> 60 líneas. Como mucho siempre habrán 10 bloques.
+        // A partir de 300 líneas los bloques pasarán a tener (totalLineCount / 10) líneas.
+        final int MAX_BLOCK_COUNT = 10;
+        final int MIN_LINE_COUNT = 30;
+
+        // Líneas por bloque que va a resumirse.
+        int linesPerChunk;
+        if (originalLineCount < MIN_LINE_COUNT) {
+            linesPerChunk = originalLineCount;
+        } else {
+            linesPerChunk = Math.max(MIN_LINE_COUNT, originalLineCount / MAX_BLOCK_COUNT);
+        }
+        // Líneas que queremos que tenga cada bloque después de ser recumido.
+        // No tiene por qué coincidir con el número final, pero se acerca bastante
         int goalLines;
         if (linesPerChunk == originalLineCount) {
             goalLines = originalLineCount;
