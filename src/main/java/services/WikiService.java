@@ -37,13 +37,13 @@ public class WikiService {
     public Response retrieve(@PathParam("keywords") String encodedKeywords) throws UnsupportedEncodingException {
         String decodedKeywords = URLDecoder.decode(encodedKeywords, "UTF-8");
         String keywords = decodedKeywords.replace(" ", "_");
-        String title;
+        String titleAnchor;
 
         // Si se provee un link directo al artículo, extraemos el título
         if (api.isValidLink(keywords)) {
-            title = api.getTitleFromLink(keywords);
+            titleAnchor = api.getTitleAnchorFromLink(keywords);
         } else {
-            title = keywords;
+            titleAnchor = keywords;
         }
         ArticleInfo info = api.getArticleInfo(keywords);
         if (info.isArticle()) {
@@ -75,13 +75,13 @@ public class WikiService {
                 + " coinciden con el nombre del artículo");
 
         Article article;
-        if (cache.isCached(title)) {
-            article = cache.retrieve(title);
+        if (cache.isCached(titleAnchor)) {
+            article = cache.retrieve(titleAnchor);
             System.out.println("Devuelto artículo desde caché.");
 
         } else {
             // Obtenemos el título, secciones y contenido del artículo de la API de Wikipedia
-            JSONObject sourceJSON = api.getArticleJSON(title);
+            JSONObject sourceJSON = api.getArticleJSON(titleAnchor);
             // A partir de esta información troceamos el contenido en secciones.
             ArticleSplitter ab = new ArticleSplitter(sourceJSON);
             Article splitArticle = ab.getSplitArticle();
@@ -90,9 +90,10 @@ public class WikiService {
             Article parsedArticle = parser.getParsedArticle();
             // Resumimos el artículo a un % de su total
             ArticleSummarizer summarizer = new ArticleSummarizer(parsedArticle);
-            article = summarizer.getSummarizedArticle(0.1f);
+            System.out.println("Resumiendo artículo: " + parsedArticle.getTitle());
+            article = summarizer.getSummarizedArticle(0.2f);
             // Lo almacenamos en caché
-            cache.store(article);
+            cache.store(article, titleAnchor);
         }
 
         // Devolvemos el artículo en forma de respuesta HTTP

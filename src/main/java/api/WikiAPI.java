@@ -38,7 +38,7 @@ public class WikiAPI {
     }
 
 
-    public String getTitleFromLink(String link) {
+    public String getTitleAnchorFromLink(String link) {
         String baseUrl = "wikipedia.org/wiki/";
         int startIndex = link.indexOf(baseUrl);
         return link.substring(startIndex + baseUrl.length());

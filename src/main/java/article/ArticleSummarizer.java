@@ -152,7 +152,7 @@ public class ArticleSummarizer {
         return summarizedArticle;
     }
 
-    private List<String> getSummarizedLines(float reductionFactor) {
+    private List<String> getSummarizedLines(float originalReductionFactor) {
         // Dividimos el contenido del artículo en líneas individuales para saber cuántas hay
         // y poder dividirlas en los varios resúmenes que se harán para obtener el resumen
         // compuesto de todos los resúmenes parciales
@@ -161,41 +161,60 @@ public class ArticleSummarizer {
         int originalLineCount = allContentLines.size();
 
         List<String> summarizedLines = new ArrayList<>();
-        // Bloques de al menos 30 líneas. Si tiene más de 30 líneas (p.e. 600 líneas) se divide en
-        // bloques de 600/10 -> 60 líneas. Como mucho siempre habrán 10 bloques.
-        // A partir de 300 líneas los bloques pasarán a tener (totalLineCount / 10) líneas.
-        final int MAX_BLOCK_COUNT = 10;
-        final int MIN_LINE_COUNT = 30;
 
+        // Un artículo nunca será resumido a menos de 10 líneas.
+        final int MIN_SUMMARY_LINE_COUNT = 10;
+        if (originalLineCount <= MIN_SUMMARY_LINE_COUNT) {
+            return allContentLines;
+        }
+
+        // Bloques de 30 líneas o menos. Si tiene más de 30 líneas (p.e. 310 líneas) se divide en
+        // bloques de 310/10 -> 31 líneas.
+        // Como mucho habrá MAX_BLOCK_COUNT bloques enteros más uno para el resto de líneas.
+        // A partir de (MIN_BLOCK_LINE_COUNT * MAX_BLOCK_COUNT) líneas los bloques pasarán a tener
+        // (originalLineCount / MAX_BLOCK_COUNT) líneas.
+        final int MAX_BLOCK_COUNT = 10;
+        final int MIN_BLOCK_LINE_COUNT = 30;
         // Líneas por bloque que va a resumirse.
         int linesPerChunk;
-        if (originalLineCount < MIN_LINE_COUNT) {
+        if (originalLineCount < MIN_BLOCK_LINE_COUNT) {
             linesPerChunk = originalLineCount;
         } else {
-            linesPerChunk = Math.max(MIN_LINE_COUNT, originalLineCount / MAX_BLOCK_COUNT);
+            linesPerChunk = Math.max(MIN_BLOCK_LINE_COUNT, originalLineCount / MAX_BLOCK_COUNT);
         }
-        // Líneas que queremos que tenga cada bloque después de ser recumido.
-        // No tiene por qué coincidir con el número final, pero se acerca bastante
-        int goalLines;
-        if (linesPerChunk == originalLineCount) {
-            goalLines = originalLineCount;
-        } else {
-            goalLines = Math.round(linesPerChunk * reductionFactor);
-        }
+
+        // Adaptamos el % de líneas a conservar entre un máximo y mínimo dependiendo
+        // del número total de líneas del artículo original.
+        // Si originalLineCount == MIN_SUMMARY_LINE_COUNT el factor de reducción es 1.
+        // Tal y como incrementa originalLineCount el factor de reducción
+        // disminuye como mucho al valor original.
+        float reductionFactor = Math.max(originalReductionFactor,
+                1f * MIN_SUMMARY_LINE_COUNT / originalLineCount);
+
+        // Líneas que queremos que tenga cada bloque después de ser resumido.
+        // Normalmente no coincide con el número final, pero se acerca bastante
+        int goalLinesPerChunk = Math.round(linesPerChunk * reductionFactor);
         int lineIndex = 0;
-        System.out.println("Original line count: " + originalLineCount);
-        System.out.println("Lines per chunk: " + linesPerChunk);
-        System.out.println("Goal lines: " + goalLines);
+        System.out.println("Número de líneas del artículo original: " + originalLineCount);
+        System.out.println("---");
+        System.out.println("Líneas por bloque de resumen: " + linesPerChunk);
+        System.out.println("Líneas objetivo a resumir por bloque: " + goalLinesPerChunk);
+        System.out.println("Factor de reducción %: " + reductionFactor);
+        System.out.println("---");
+        int blockCount = 0;
         while(lineIndex < originalLineCount) {
             List<String> chunkSummaryLines = summarizeChunk(allContentLines.subList(
                    lineIndex,
                    Math.min(lineIndex + linesPerChunk, originalLineCount)),
-                   goalLines
+                   goalLinesPerChunk
             );
             summarizedLines.addAll(chunkSummaryLines);
             lineIndex += linesPerChunk;
+            blockCount++;
         }
-        System.out.println("Summary line count: " + originalLineCount + " => " + summarizedLines.size());
+        System.out.println("Número de bloques: " + blockCount);
+        System.out.println("Número de líneas inicial y final: " + originalLineCount + " => " + summarizedLines.size());
+        System.out.println("---------------");
         //System.out.println("Summarized line count: " + summarizedLines.size());
         //System.out.println("Summarized article content: \n" + summarizedArticleContent);
         return summarizedLines;

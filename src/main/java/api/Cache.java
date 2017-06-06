@@ -52,8 +52,8 @@ public class Cache {
         return suggestionList;
     }
 
-    public boolean isCached(String articleTitle) {
-        File articleJson = new File(PATH + articleTitle + ".json");
+    public boolean isCached(String filename) {
+        File articleJson = new File(PATH + filename + ".json");
         return articleJson.exists();
     }
 
@@ -77,16 +77,16 @@ public class Cache {
         return null;
     }
 
-    public void store(Article article) {
+    public void store(Article article, String filename) {
         String articleTitle = article.getTitle();
         ObjectMapper mapper = new ObjectMapper();
         try {
             // Convertimos el artículo en un string JSON y lo escribimos directamente a un archivo
             mapper.writerWithDefaultPrettyPrinter().writeValue(
-                    new File(PATH + article.getTitle() + ".json"), article);
+                    new File(PATH + filename + ".json"), article);
 
             // Guardamos el nombre del artículo en la lista de sugerencias
-            listing.put(article.getTitle().toLowerCase(), 1);
+            listing.put(filename.toLowerCase(), 1);
 
             // Cada X artículos accedidos guardamos la lista de artículos accedidos
             // Idealmente esto se haría sólo al cerrar la aplicación...

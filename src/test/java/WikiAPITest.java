@@ -120,7 +120,7 @@ public class WikiAPITest {
         for(int i = 0; i < links.length; i++) {
             String link = links[i];
             String title = titles[i];
-            String linkTitle = api.getTitleFromLink(link);
+            String linkTitle = api.getTitleAnchorFromLink(link);
             boolean isTitleCorrect = title.equals(linkTitle);
             System.out.println("\"" + title + "\" does" + (isTitleCorrect ? "" : " NOT") + " match link title \"" + linkTitle + "\" for link \"" + link + "\"");
             if (!isTitleCorrect) {
