@@ -71,7 +71,12 @@ public class ArticleSummarizer {
 
     // TODO mejorar este método ya que el nº final de líneas no coincide con el % indicado.
     public String summarize(String text, int numSentences) {
-        return summarizer.summarise(text, numSentences);
+        if (text == null || text.isEmpty()) {
+            System.out.println(numSentences);
+            return summarizer.summarise(text, numSentences);
+        } else {
+            return summarizer.summarise(text, numSentences);
+        }
     }
 
 
@@ -154,13 +159,19 @@ public class ArticleSummarizer {
         String allContentPlain = getAllContent();
         List<String> allContentLines = splitInLines(allContentPlain);
         int originalLineCount = allContentLines.size();
-        //System.out.println("Original line count: " + originalLineCount);
 
         List<String> summarizedLines = new ArrayList<>();
-        int linesPerChunk = Math.min(30, originalLineCount / 10);
-        int goalLines = Math.round(linesPerChunk * reductionFactor);
+        int linesPerChunk = Math.max(originalLineCount, originalLineCount / 10);
+        int goalLines;
+        if (linesPerChunk == originalLineCount) {
+            goalLines = originalLineCount;
+        } else {
+            goalLines = Math.round(linesPerChunk * reductionFactor);
+        }
         int lineIndex = 0;
-        //System.out.println("Lines per chunk: " + linesPerChunk);
+        System.out.println("Original line count: " + originalLineCount);
+        System.out.println("Lines per chunk: " + linesPerChunk);
+        System.out.println("Goal lines: " + goalLines);
         while(lineIndex < originalLineCount) {
             List<String> chunkSummaryLines = summarizeChunk(allContentLines.subList(
                    lineIndex,
