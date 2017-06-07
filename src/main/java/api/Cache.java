@@ -15,7 +15,7 @@ public class Cache {
 
     private static final String listingFilename = "listing.txt";
 
-    private SuggestTree listing = new SuggestTree(MAX_SUGGESTIONS);
+    private final SuggestTree listing;
 
     private static final int MAX_SUGGESTIONS = 5;
 
@@ -24,8 +24,12 @@ public class Cache {
     private static final int SAVE_COUNT = 10;
     private int nextSaveCount;
 
+    private static final String NEWLINE = "\r\n";
+
 
     private Cache() {
+        listing = new SuggestTree(MAX_SUGGESTIONS);
+        loadListing();
         nextSaveCount = SAVE_COUNT;
     }
 
@@ -40,9 +44,10 @@ public class Cache {
         return instance;
     }
 
+    // Devuelve una lista con los posibles nombres de artículo dadas sus letras iniciales
     public List<String> autocomplete(String query) {
         List<String> suggestionList = new ArrayList<String>();
-        SuggestTree.Node suggestionsNode = listing.getAutocompleteSuggestions(query);
+        SuggestTree.Node suggestionsNode = listing.getAutocompleteSuggestions(query.toLowerCase());
         if (suggestionsNode != null) {
             SuggestTree.Entry[] suggestions = suggestionsNode.getList();
             for(SuggestTree.Entry entry : suggestions) {
@@ -92,7 +97,7 @@ public class Cache {
             // Idealmente esto se haría sólo al cerrar la aplicación...
             nextSaveCount--;
             if (nextSaveCount <= 0) {
-                save();
+                saveListing();
                 nextSaveCount = SAVE_COUNT;
             }
 
@@ -110,8 +115,8 @@ public class Cache {
         }
     }
 
-    public void load() {
-        File listingFile = getListing();
+    public void loadListing() {
+        File listingFile = getListingFile();
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(listingFile));
@@ -125,13 +130,13 @@ public class Cache {
         }
     }
 
-    public void save() {
-        File listingFile = getListing();
+    public void saveListing() {
+        File listingFile = getListingFile();
         SuggestTree.Iterator iter = listing.iterator();
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(listingFile));
             while(iter.hasNext()) {
-                bw.write(iter.next().getTerm() + "\r\n"); // TODO escribir el peso también
+                bw.write(iter.next().getTerm() + NEWLINE);
             }
             bw.close();
 
@@ -141,11 +146,13 @@ public class Cache {
 
     }
 
-    private File getListing() {
+    private File getListingFile() {
         File listingFile = new File(PATH + listingFilename);
         if (listingFile.exists() == false) {
             try {
                 listingFile.createNewFile();
+                buildListingFile();
+
             } catch (IOException e) {
                 System.err.println("Error al obtener el fichero del listado de artículos de la caché."
                         + " La ruta " + listingFile.getAbsolutePath() + " no es válida o no existe.");
@@ -153,6 +160,40 @@ public class Cache {
             }
         }
         return listingFile;
+    }
+
+
+    // Cargamos todos los nombres de los artículos en caché en el listing.
+    // Este método se ejecuta si borramos listing.txt, para reconstruirlo.
+    private void buildListingFile() {
+        File listingFile = getListingFile();
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(listingFile));
+            for (File fileEntry : new File(PATH).listFiles()) {
+                if (fileEntry.isFile() && fileEntry.getName().equals(listingFilename) == false) {
+                    String articleAnchor = stripExtension(fileEntry.getName());
+                    bw.write(articleAnchor + NEWLINE);
+                }
+            }
+            bw.close();
+
+        } catch(IOException e) {
+            System.err.println("Error al generar el listado de artículos de la caché.");
+        } catch(NullPointerException e) {
+            // No hay ningún
+        }
+    }
+
+
+    private String stripExtension(String filename) {
+        // Handle null case specially.
+        if (filename == null) return null;
+        // Get position of last '.'.
+        int pos = filename.lastIndexOf(".");
+        // If there wasn't any '.' just return the string as is.
+        if (pos == -1) return filename;
+        // Otherwise return the string, up to the dot.
+        return filename.substring(0, pos);
     }
 
 }

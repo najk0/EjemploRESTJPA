@@ -75,8 +75,8 @@ public class WikiService {
                 + " coinciden con el nombre del artículo");
 
         Article article;
-        if (cache.isCached(titleAnchor)) {
-            article = cache.retrieve(titleAnchor);
+        if (cache.isCached(decodedKeywords)) {
+            article = cache.retrieve(decodedKeywords);
             System.out.println("Devuelto artículo desde caché.");
 
         } else {
@@ -93,7 +93,7 @@ public class WikiService {
             System.out.println("Resumiendo artículo: " + parsedArticle.getTitle());
             article = summarizer.getSummarizedArticle(0.2f);
             // Lo almacenamos en caché
-            cache.store(article, titleAnchor);
+            cache.store(article, article.getTitle());
         }
 
         // Devolvemos el artículo en forma de respuesta HTTP
@@ -137,7 +137,7 @@ public class WikiService {
     @Produces({"application/json"})
     @Path("auto/{keywords}")
     public Response getSuggestedArticles(@PathParam("keywords") String keywords) {
-        List<String> suggestions = cache.autocomplete(keywords.toLowerCase());
+        List<String> suggestions = cache.autocomplete(keywords);
 
         return  Response
                 .status(Response.Status.OK)
