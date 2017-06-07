@@ -35,8 +35,18 @@ public class WikiService {
     @Produces({"application/json"})
     @Path("wiki/{keywords}")
     public Response retrieve(@PathParam("keywords") String encodedKeywords) throws UnsupportedEncodingException {
+        // Quitamos las barras bajas para obtener el nombre del artículo al hacer una petición
+        // a la vista ya que se pasa el contenido a partir de /wiki/<nombre_articulo> y no
+        // coincide con los almacenados, que no tienen barras bajas.
+        encodedKeywords = encodedKeywords.replace("_", " ");
+
+        // Decodificamos todos los caracteres especiales
         String decodedKeywords = URLDecoder.decode(encodedKeywords, "UTF-8");
+
+        // Ahora sí obtenemos las palabras con barras bajas intercaladas.
         String keywords = decodedKeywords.replace(" ", "_");
+
+        // Buscamos obtener el título con las barras bajas intercaladas
         String titleAnchor;
 
         // Si se provee un link directo al artículo, extraemos el título
