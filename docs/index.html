@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Welcome to qWiki</title>
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="landing-styles.css">
+	 <meta charset="UTF-8"> 
+</head>
+<body>
+	<div class="container">
+
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+			<div class="navbar-header">
+			  <a class="navbar-brand wikifont" href="index.html">qWiki</a>
+			</div>
+			<ul class="nav navbar-nav  navbar-right">
+			  <li class="active"><a href="index.html">Home</a></li>
+			  <li><a href="project.html">The project</a></li>
+			  <li><a href="company.html">Our company</a></li>
+			</ul>
+		  </div>
+		</nav>
+	
+		<div class="jumbotron">
+			<h1 class="wikifont">qWiki</h1>
+			<h2>The fastest way to navigate Wikipedia.</h2>
+			<button id="startnow" class="btn" type="button" onclick="location.href='http://localhost:4200/';">Try it out now!</button>
+		</div>
+		<div class="panel panel-primary">
+			<div class="row">
+				<div id="features" class="col-md-6">
+					<ul>
+						<li class="benefit">Easy to use</li>
+						<li class="benefit">Intuitive interface</li>
+						<li class="benefit">Summarize directly from wikipedia links</li>
+						<li class="benefit">And more!</li>
+					</ul>
+				</div>
+				<div id="description" class="col-md-6">
+					<p class="big-p">qWiki aims to provide a better user experience browsing Wikipedia by sifting trough the original article and displaying only the most important content.</p>
+					<p class="big-p">Navigate Wikipedia quicker today using qWiki.</p>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-primary">
+			<h2 class="wikifont">Live demo:</h2>
+			<div align="center" class="embed-responsive embed-responsive-16by9">
+				<iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/lL0Gfe2V_fg" frameborder="0" allowfullscreen></iframe>
+			</div>
+			<div class="clearfix"></div>
+			<button id="startnow" class="btn center-block" type="button" onclick="location.href='http://localhost:4200/';">Get started</button>
+		</div>
+		<div id="footer" class="panel panel-primary">
+			&copy; 2017 Copyright by qWiki Team.
+		</div>
+
+	</div> <!-- container -->
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

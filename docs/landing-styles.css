@@ -1,0 +1,63 @@
+body {
+	margin: 20px;
+	font-family: sans-serif;
+	background-color: #f6f6f6;
+}
+
+.wikifont {
+  font-family: Hoefler Text, Baskerville Old Face, Garamond, Times New Roman, serif;
+}
+
+.jumbotron {
+	text-align: center;
+	background-color: #99CCFF;
+}
+
+.big-p {
+	font-size: 20px;
+}
+
+h1.sec-title {
+	font-size: 45px;
+}
+
+li.benefit {
+	list-style: none;
+	background-image: url("check.png");
+	background-repeat: no-repeat;
+	background-position: center left;
+	line-height: 30px;
+	padding-left: 30px;
+}
+
+.panel {
+	padding: 20px;
+}
+
+#startnow {
+	margin-top: 20px;
+	padding: 15px 30px;
+	
+	font-size: 20px;
+	border: 1px solid #f6f6f6;
+	background-color: #99CCFF;
+}
+
+#startnow:hover {
+	color: #36c;
+	background-color: #f6f6f6;
+}
+
+#features {
+	border-right: 1px groove black;
+}
+
+#description {
+	
+}
+
+div#footer {
+	text-align: center;
+	padding: 10px 50px 10px 50px;
+	background-color: #f0f0f0;
+}

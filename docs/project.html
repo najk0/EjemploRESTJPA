@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>qWiki - The project</title>
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="landing-styles.css">
+	<link rel="stylesheet" type="text/css" href="fancybox-master/dist/jquery.fancybox.min.css">
+	 <meta charset="UTF-8"> 
+</head>
+<body>
+	<div class="container">
+
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+			<div class="navbar-header">
+			  <a class="navbar-brand wikifont" href="index.html">qWiki</a>
+			</div>
+			<ul class="nav navbar-nav  navbar-right">
+			  <li><a href="index.html">Home</a></li>
+			  <li class="active"><a href="project.html">The project</a></li>
+			  <li><a href="company.html">Our company</a></li>
+			</ul>
+		  </div>
+		</nav>
+		
+		<div class="jumbotron">
+			<h1 class="wikifont sec-title">The project</h1>
+			<p>qWiki was born as a joint project for the subjects of <i>Agile Methods</i> and <i>Workshop of software engineering</i>. Aarón Arriero came up with the idea which defined the basis of the project as well as its structure.
+			The main purpose of qWiki is to summarize Wikipedia articles. Its goal is to facilitate the search for relevant information, especially in long and difficult to navigate articles.</p>
+			<p>Given the complexity of the project we chose to follow the Scrum methodology, which has aided development by allowing us to work through prototypes rather than trying to do everything at once. This methodology also helped us discard ideas that ended up being either too complex or irrelevant.</p>
+		</div>
+		<div class="panel panel-primary center-block">
+			<h2 class="wikifont">qWiki examples:</h2>
+			<div class="row">
+				<div class="col-xs-6">
+					<a href="qwiki1.png" data-fancybox data-caption="Main page">
+						<img  class="img-responsive img-thumbnail" src="qwiki1.png" alt="Main page" />
+					</a>
+				</div>
+				<div class="col-xs-6">
+					<a href="qwiki2.png" data-fancybox data-caption="Article page">
+						<img  class="img-responsive img-thumbnail" src="qwiki2.png" alt="Article page" />
+					</a>
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-xs-6">
+					<a href="qwiki3.png" data-fancybox data-caption="Navigation example">
+						<img  class="img-responsive img-thumbnail" src="qwiki3.png" alt="Navigation example" />
+					</a>
+				</div>
+				<div class="col-xs-6">
+					<a href="qwiki4.png" data-fancybox data-caption="Disambiguation example">
+						<img  class="img-responsive img-thumbnail" src="qwiki4.png" alt="Disambiguation example" />
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="jumbotron">
+			<h1 class="wikifont sec-title">Technologies and standards</h1>
+			<p>qWiki is a web application that follows a RESTful JAX-RS based architecture for Java. The RESTful architecture is built upon the Jersey framework, and a MEAN stack (MongoDB, Express, Angular2 and Node) is used to provide an actual and dynamic front-end user experience. Finally Wikipedia's API is used as the main source of information, and an automatic summarization library (Classifier4J) summarizes its contents. We also performed version control throughout the project using GitHub.</p>
+		</div>
+		<div class="jumbotron">
+			<h1 class="wikifont sec-title">Work methodology</h1>
+			<p>This project has followed the Scrum agile methodology, which consists in dividing the duration of the project into short development cycles (usually 2 weeks) called sprints. Each sprint provides a final product increment (prototype) that can be delivered to the customer for review.</p>
+			<p>In the planning of each sprint, the user stories that will be covered are decided. After planning, the team, composed of 4 people, meets every day before starting to work to catch up on the work of colleagues and resolve doubts or problems that have arisen since the last meeting.</p>
+			<p>Once the sprint is finished, a meeting is held to review the sprint and, if necessary, show the resulting prototype to the customer.</p>
+		</div>
+		<div class="panel panel-primary">
+			<h2 class="wikifont">Financing</h2>
+			<p>As we depend on Wikipedia we cannot earn money with qWiki so we can only ask for donations to keep it online. We are a nonprofit group.</p>
+		</div>
+		<div id="footer" class="panel panel-primary">
+			&copy; 2017 Copyright by qWiki Team.
+		</div>
+
+	</div> <!-- container -->
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="jquery-3.2.1.min.js"></script>
+	<script src="fancybox-master/dist/jquery.fancybox.min.js"></script>
+</body>
+</html>
